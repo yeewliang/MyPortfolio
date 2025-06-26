@@ -226,4 +226,22 @@
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
 
+  /**
+   * Calculate and display age
+   */
+  function calculateAge(birthYear) {
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+  }
+
+  function displayAge() {
+    const birthYear = 1988; // Replace with the actual birth year
+    const ageElement = document.querySelector('.currentage');
+    if (ageElement) {
+      ageElement.innerText = calculateAge(birthYear);
+    }
+  }
+
+  window.addEventListener('load', displayAge);
+
 })();
