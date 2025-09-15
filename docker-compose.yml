@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build: .
+    container_name: my-portfolio
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    volumes:
+      - ./logs:/var/log/nginx
+    environment:
+      - TZ=UTC
+    labels:
+      - "com.docker.compose.project=my-portfolio"
