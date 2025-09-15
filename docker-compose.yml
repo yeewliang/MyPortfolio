@@ -5,7 +5,7 @@ services:
     build: .
     container_name: my-portfolio
     ports:
-      - "80:80"
+      - "8081:80"
     restart: unless-stopped
     volumes:
       - ./logs:/var/log/nginx
