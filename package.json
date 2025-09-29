@@ -1,0 +1,42 @@
+{
+  "name": "yee-wei-liang-portfolio",
+  "version": "1.0.0",
+  "description": "A modern, responsive portfolio website showcasing the professional experience and projects of Yee Wei Liang, a Staff Analyst Data Scientist with expertise in machine learning and computer vision.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "npx http-server src -p 8000 -o",
+    "dev": "npx http-server src -p 8000 -o",
+    "docker:build": "docker build -t my-portfolio .",
+    "docker:run": "docker run -d -p 8080:80 --name my-portfolio my-portfolio",
+    "docker:stop": "docker stop my-portfolio && docker rm my-portfolio",
+    "docker:dev": "npm run docker:build && npm run docker:run",
+    "compose:up": "docker-compose up -d",
+    "compose:down": "docker-compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeewliang/MyPortfolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "website",
+    "data-scientist",
+    "machine-learning",
+    "computer-vision",
+    "bootstrap",
+    "responsive",
+    "docker"
+  ],
+  "author": "Yee Wei Liang <weiliang.yee@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yeewliang/MyPortfolio/issues"
+  },
+  "homepage": "https://github.com/yeewliang/MyPortfolio#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
