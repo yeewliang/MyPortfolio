@@ -188,8 +188,30 @@
       // For development/demo purposes, if the API fails or is not set, we can load some mock data or handle the error.
       // In a real scenario, you might want to show an error message.
       const response = await fetch(apiEndpoint);
-      if (!response.ok) throw new Error('Network response was not ok');
-      const images = await response.json();
+      
+      // Log response details for debugging
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers.get('content-type'));
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+      
+      // Get raw text first to debug
+      const responseText = await response.text();
+      console.log('Raw response:', responseText.substring(0, 500));
+      
+      // Try to parse JSON
+      let images;
+      try {
+        images = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        console.error('Response text:', responseText);
+        throw new Error('Invalid JSON response from server');
+      }
 
       if (loader) loader.remove();
 
