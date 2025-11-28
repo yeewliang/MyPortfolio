@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 header('Content-Type: application/json; charset=utf-8');
 
 // Configuration
-$imageDirectory = '.'; // Current directory (since this is the web root)
+$imageDirectory = __DIR__ . '/gallery'; // Use the "gallery" subfolder inside this script's directory
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 $images = [];
