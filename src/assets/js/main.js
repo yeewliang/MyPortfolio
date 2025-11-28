@@ -195,7 +195,9 @@
         const item = document.createElement('div');
         item.className = `col-lg-4 col-md-6 portfolio-item isotope-item ${image.category}`;
         item.innerHTML = `
-          <img src="${image.src}" class="img-fluid" alt="${image.title}" loading="lazy">
+          <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
+            <img src="${image.src}" class="img-fluid" alt="${image.title}" loading="lazy">
+          </a>
           <div class="portfolio-info">
             <h4>${image.title}</h4>
             <p>${image.category}</p>
