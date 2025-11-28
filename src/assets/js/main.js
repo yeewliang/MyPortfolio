@@ -176,7 +176,9 @@
    * Fetch Images from NAS
    */
   async function fetchNasImages() {
-    const apiEndpoint = 'https://assets.weiliangyee.dev/photos.php';
+    // Use local proxy endpoint (nginx proxies to NAS with CORS headers)
+    const apiEndpoint = '/api/photos';
+    
     const container = document.querySelector('.isotope-container');
     const loader = document.querySelector('#portfolio-loader');
 

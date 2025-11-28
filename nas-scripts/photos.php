@@ -1,14 +1,11 @@
 <?php
 // photos.php - Host this on your Synology Web Station
 
-// Configuration
-$imageDirectory = '.'; // Current directory (since this is the web root)
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-// CORS Configuration - MUST come FIRST
+// CORS Configuration - MUST come ABSOLUTELY FIRST before ANY output
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Max-Age: 86400"); // Cache preflight for 24 hours
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -18,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Set content type
 header('Content-Type: application/json');
+
+// Configuration
+$imageDirectory = '.'; // Current directory (since this is the web root)
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 $images = [];
 
