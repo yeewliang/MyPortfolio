@@ -65,7 +65,7 @@ try {
             elseif (strpos(strtolower($file), 'portrait') !== false) $category = 'filter-books';
             
             // Construct absolute URL
-            $imageUrl = $baseUrl . '/' . rawurlencode($file);
+            $imageUrl = $baseUrl . '/gallery/' . rawurlencode($file);
 
             $images[] = [
                 'src' => $imageUrl,
