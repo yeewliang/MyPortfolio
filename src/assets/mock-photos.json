@@ -1,0 +1,23 @@
+[
+    {
+        "src": "assets/img/portfolio/app-1.jpg",
+        "title": "Mock Nature",
+        "category": "filter-app",
+        "width": 800,
+        "height": 600
+    },
+    {
+        "src": "assets/img/portfolio/product-1.jpg",
+        "title": "Mock Urban",
+        "category": "filter-product",
+        "width": 800,
+        "height": 600
+    },
+    {
+        "src": "assets/img/portfolio/branding-1.jpg",
+        "title": "Mock Travel",
+        "category": "filter-branding",
+        "width": 800,
+        "height": 600
+    }
+]

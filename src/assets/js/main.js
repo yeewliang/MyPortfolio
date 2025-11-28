@@ -6,7 +6,7 @@
 * License: https://bootstrapmade.com/license/
 */
 
-(function() {
+(function () {
   "use strict";
 
   /**
@@ -37,7 +37,7 @@
    * Toggle mobile nav dropdowns
    */
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
+    navmenu.addEventListener('click', function (e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
@@ -118,7 +118,7 @@
     new Waypoint({
       element: item,
       offset: '80%',
-      handler: function(direction) {
+      handler: function (direction) {
         let progress = item.querySelectorAll('.progress .progress-bar');
         progress.forEach(el => {
           el.style.width = el.getAttribute('aria-valuenow') + '%';
@@ -137,41 +137,101 @@
   /**
    * Init isotope layout and filters
    */
-  document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
-    let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
-    let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
-    let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
+  /**
+   * Init isotope layout and filters
+   */
+  function initIsotopeLayout() {
+    document.querySelectorAll('.isotope-layout').forEach(function (isotopeItem) {
+      let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
+      let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
+      let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
 
-    let initIsotope;
-    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function() {
-      initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
-        itemSelector: '.isotope-item',
-        layoutMode: layout,
-        filter: filter,
-        sortBy: sort
-      });
-    });
-
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
-      filters.addEventListener('click', function() {
-        isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
-        this.classList.add('filter-active');
-        initIsotope.arrange({
-          filter: this.getAttribute('data-filter')
+      let initIsotope;
+      imagesLoaded(isotopeItem.querySelector('.isotope-container'), function () {
+        initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
+          itemSelector: '.isotope-item',
+          layoutMode: layout,
+          filter: filter,
+          sortBy: sort
         });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
-      }, false);
-    });
+      });
 
-  });
+      isotopeItem.querySelectorAll('.isotope-filters li').forEach(function (filters) {
+        filters.addEventListener('click', function () {
+          isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
+          this.classList.add('filter-active');
+          initIsotope.arrange({
+            filter: this.getAttribute('data-filter')
+          });
+          if (typeof aosInit === 'function') {
+            aosInit();
+          }
+        }, false);
+      });
+
+    });
+  }
+
+  /**
+   * Fetch Images from NAS
+   */
+  async function fetchNasImages() {
+    const apiEndpoint = 'https://assets.weiliangyee.dev/photos.php';
+    const container = document.querySelector('.isotope-container');
+    const loader = document.querySelector('#portfolio-loader');
+
+    if (!container) return;
+
+    try {
+      // For development/demo purposes, if the API fails or is not set, we can load some mock data or handle the error.
+      // In a real scenario, you might want to show an error message.
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const images = await response.json();
+
+      if (loader) loader.remove();
+
+      images.forEach(image => {
+        const item = document.createElement('div');
+        item.className = `col-lg-4 col-md-6 portfolio-item isotope-item ${image.category}`;
+        item.innerHTML = `
+          <img src="${image.src}" class="img-fluid" alt="${image.title}">
+          <div class="portfolio-info">
+            <h4>${image.title}</h4>
+            <p>${image.category}</p>
+            <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+            <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      // Re-init GLightbox for new elements
+      const glightbox = GLightbox({
+        selector: '.glightbox'
+      });
+
+      // Init Isotope after adding items
+      initIsotopeLayout();
+
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      if (loader) {
+        loader.innerHTML = '<p class="text-danger">Failed to load images. Please check console for details.</p>';
+      }
+      // Fallback: Init Isotope anyway so the layout doesn't break if there are static items (though we removed them)
+      initIsotopeLayout();
+    }
+  }
+
+  // Call fetch function on load
+  window.addEventListener('load', fetchNasImages);
 
   /**
    * Init swiper sliders
    */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
       let config = JSON.parse(
         swiperElement.querySelector(".swiper-config").innerHTML.trim()
       );
@@ -189,7 +249,7 @@
   /**
    * Correct scrolling position upon page load for URLs containing hash links.
    */
-  window.addEventListener('load', function(e) {
+  window.addEventListener('load', function (e) {
     if (window.location.hash) {
       if (document.querySelector(window.location.hash)) {
         setTimeout(() => {
