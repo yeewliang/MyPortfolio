@@ -1,6 +1,10 @@
 <?php
 // photos.php - Host this on your Synology Web Station
 
+// Disable error display to prevent breaking JSON
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 // CORS Configuration - MUST come ABSOLUTELY FIRST before ANY output
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
@@ -14,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Set content type
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Configuration
 $imageDirectory = '.'; // Current directory (since this is the web root)
@@ -22,50 +26,62 @@ $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 $images = [];
 
-// Helper to get base URL
-$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
-$baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
-// If the script is in a subdirectory, you might need to append that. 
-// But since this is root, HTTP_HOST is sufficient.
-// If it's in a subfolder like /assets/, REQUEST_URI would help, but let's stick to simple for root.
-// Actually, safer to use directory of the script if not root, but user said it IS root.
+try {
+    // Helper to get base URL
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+    $baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
 
-if (is_dir($imageDirectory)) {
+    if (!is_dir($imageDirectory)) {
+        echo json_encode(['error' => 'Directory not found', 'path' => realpath($imageDirectory)]);
+        exit;
+    }
+    
     $files = scandir($imageDirectory);
     
+    if ($files === false) {
+        echo json_encode(['error' => 'Unable to scan directory']);
+        exit;
+    }
+    
     foreach ($files as $file) {
+        if ($file === '.' || $file === '..') continue;
+        
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         
         if (in_array($extension, $allowedExtensions)) {
-            // Get image dimensions
             $filePath = $imageDirectory . '/' . $file;
-            $dimensions = getimagesize($filePath);
             
-            // Determine category
-            $category = 'app'; // Default category
-            if (strpos($file, 'nature') !== false) $category = 'filter-app';
-            elseif (strpos($file, 'urban') !== false) $category = 'filter-product';
-            elseif (strpos($file, 'travel') !== false) $category = 'filter-branding';
-            elseif (strpos($file, 'portrait') !== false) $category = 'filter-books';
+            // Skip if not readable
+            if (!is_readable($filePath)) continue;
             
-            // Construct Absolute URL
-            // Assuming script is at root, file is at root.
-            // If script is at https://domain.com/photos.php, image is https://domain.com/image.jpg
-            $imageUrl = $baseUrl . '/' . $file;
+            // Get image dimensions (suppress warnings)
+            $dimensions = @getimagesize($filePath);
+            
+            // Determine category based on filename
+            $category = 'filter-app'; // Default
+            if (strpos(strtolower($file), 'nature') !== false) $category = 'filter-app';
+            elseif (strpos(strtolower($file), 'urban') !== false) $category = 'filter-product';
+            elseif (strpos(strtolower($file), 'travel') !== false) $category = 'filter-branding';
+            elseif (strpos(strtolower($file), 'portrait') !== false) $category = 'filter-books';
+            
+            // Construct absolute URL
+            $imageUrl = $baseUrl . '/' . rawurlencode($file);
 
             $images[] = [
                 'src' => $imageUrl,
                 'title' => pathinfo($file, PATHINFO_FILENAME),
                 'category' => $category,
-                'width' => $dimensions[0] ?? 0,
-                'height' => $dimensions[1] ?? 0
+                'width' => $dimensions[0] ?? 800,
+                'height' => $dimensions[1] ?? 600
             ];
         }
     }
-} else {
-    echo json_encode(['error' => 'Directory not found']);
-    exit;
+    
+    // Output JSON
+    echo json_encode($images, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
-
-echo json_encode($images);
 ?>
