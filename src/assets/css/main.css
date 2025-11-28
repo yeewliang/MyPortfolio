@@ -828,6 +828,12 @@ section,
   overflow: hidden;
 }
 
+.portfolio .portfolio-item img {
+  width: 100%;
+  height: 300px; /* Fixed height for standardization */
+  object-fit: cover; /* Maintain aspect ratio */
+}
+
 .portfolio .portfolio-item .portfolio-info {
   opacity: 0;
   position: absolute;

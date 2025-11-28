@@ -8,7 +8,7 @@ $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 // Set headers
 header('Content-Type: application/json');
 // CORS Configuration
-$allowedOriginPattern = '/^https?:\/\/([a-z0-9-]+\.)?weiliangyee\.dev$/';
+$allowedOriginPattern = '/^https?:\/\/(([a-z0-9-]+\.)?weiliangyee\.dev|(localhost|127\.0\.0\.1)(:[0-9]+)?)$/';
 
 if (isset($_SERVER['HTTP_ORIGIN']) && preg_match($allowedOriginPattern, $_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
