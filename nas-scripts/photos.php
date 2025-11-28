@@ -2,7 +2,7 @@
 // photos.php - Host this on your Synology Web Station
 
 // Configuration
-$imageDirectory = './photos'; // Relative path to your photos folder
+$imageDirectory = '.'; // Current directory (since this is the web root)
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 // Set headers
@@ -12,13 +12,17 @@ $allowedOriginPattern = '/^https?:\/\/([a-z0-9-]+\.)?weiliangyee\.dev$/';
 
 if (isset($_SERVER['HTTP_ORIGIN']) && preg_match($allowedOriginPattern, $_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-} else {
-    // Optional: Handle unauthorized origin or just don't send the header
-    // header("HTTP/1.1 403 Forbidden");
-    // exit;
 }
 
 $images = [];
+
+// Helper to get base URL
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+$baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
+// If the script is in a subdirectory, you might need to append that. 
+// But since this is root, HTTP_HOST is sufficient.
+// If it's in a subfolder like /assets/, REQUEST_URI would help, but let's stick to simple for root.
+// Actually, safer to use directory of the script if not root, but user said it IS root.
 
 if (is_dir($imageDirectory)) {
     $files = scandir($imageDirectory);
@@ -27,21 +31,24 @@ if (is_dir($imageDirectory)) {
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         
         if (in_array($extension, $allowedExtensions)) {
-            // Get image dimensions (optional, but good for masonry layout)
+            // Get image dimensions
             $filePath = $imageDirectory . '/' . $file;
             $dimensions = getimagesize($filePath);
             
-            // Determine category based on filename or folder structure
-            // For this example, we'll assign a random category or parse it from the filename
-            // Example filename: nature-mountain.jpg -> category: nature
+            // Determine category
             $category = 'app'; // Default category
             if (strpos($file, 'nature') !== false) $category = 'filter-app';
             elseif (strpos($file, 'urban') !== false) $category = 'filter-product';
             elseif (strpos($file, 'travel') !== false) $category = 'filter-branding';
             elseif (strpos($file, 'portrait') !== false) $category = 'filter-books';
             
+            // Construct Absolute URL
+            // Assuming script is at root, file is at root.
+            // If script is at https://domain.com/photos.php, image is https://domain.com/image.jpg
+            $imageUrl = $baseUrl . '/' . $file;
+
             $images[] = [
-                'src' => $imageDirectory . '/' . $file,
+                'src' => $imageUrl,
                 'title' => pathinfo($file, PATHINFO_FILENAME),
                 'category' => $category,
                 'width' => $dimensions[0] ?? 0,
