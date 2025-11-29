@@ -57,6 +57,15 @@ function getImageMetadata($filePath) {
         return $metadata;
     }
     
+    // DEBUG: Log ALL available EXIF fields for the first image
+    static $firstImageLogged = false;
+    if (!$firstImageLogged) {
+        error_log("=== COMPLETE EXIF DATA FOR: $filePath ===");
+        error_log(print_r($exif, true));
+        error_log("=== END EXIF DATA ===");
+        $firstImageLogged = true;
+    }
+    
     // Camera Model
     if (isset($exif['IFD0']['Model'])) {
         $metadata['camera'] = trim($exif['IFD0']['Model']);
@@ -267,12 +276,26 @@ function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $category
                     'title' => pathinfo($item, PATHINFO_FILENAME),
                     'category' => $category,
                     'width' => $dimensions[0] ?? 800,
-                    'height' => $dimensions[1] ?? 600
+                    'height' => $dimensions[1] ?? 600,
+                    '_debug_exif_available' => function_exists('exif_read_data'),
+                    '_debug_file_path' => $fullPath
                 ];
                 
                 // Add metadata if available
                 if (!empty($metadata)) {
                     $imageData['metadata'] = $metadata;
+                }
+                
+                // Add debug EXIF if available - read directly here
+                if (function_exists('exif_read_data')) {
+                    $debugExif = @exif_read_data($fullPath, 0, true);
+                    if ($debugExif !== false && $debugExif !== null) {
+                        $imageData['_debug_raw_exif'] = $debugExif;
+                    } else {
+                        $imageData['_debug_exif_error'] = 'exif_read_data returned false/null';
+                    }
+                } else {
+                    $imageData['_debug_exif_error'] = 'exif_read_data function not available';
                 }
                 
                 $images[] = $imageData;

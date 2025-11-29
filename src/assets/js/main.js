@@ -230,7 +230,7 @@
           if (meta.aperture) metadataItems.push(`<span>${meta.aperture}</span>`);
           if (meta.shutterSpeed) metadataItems.push(`<span>${meta.shutterSpeed}</span>`);
           if (meta.focalLength) metadataItems.push(`<span>${meta.focalLength}</span>`);
-          if (meta.dateTaken) metadataItems.push(`<i class="bi bi-calendar"></i> ${new Date(meta.dateTaken).toLocaleDateString()}`);
+          if (meta.dateTaken) metadataItems.push(`<i class="bi bi-calendar"></i> ${new Date(meta.dateTaken).getFullYear()}`);
           if (meta.location) metadataItems.push(`<i class="bi bi-geo-alt"></i> ${meta.location}`);
           
           if (metadataItems.length > 0) {
