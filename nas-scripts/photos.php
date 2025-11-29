@@ -45,62 +45,147 @@ function getImageMetadata($filePath) {
     
     // Check if EXIF functions are available
     if (!function_exists('exif_read_data')) {
+        error_log("EXIF functions not available for: $filePath");
         return $metadata;
     }
     
+    // Suppress warnings but capture them
     $exif = @exif_read_data($filePath, 0, true);
     
-    if ($exif) {
-        // ISO
-        if (isset($exif['EXIF']['ISOSpeedRatings'])) {
-            $metadata['iso'] = (string)$exif['EXIF']['ISOSpeedRatings'];
-        }
-        
-        // Aperture (F-Number)
-        if (isset($exif['EXIF']['FNumber'])) {
-            $fNumber = $exif['EXIF']['FNumber'];
-            if (strpos($fNumber, '/') !== false) {
-                $parts = explode('/', $fNumber);
+    if (!$exif) {
+        error_log("Could not read EXIF data from: $filePath");
+        return $metadata;
+    }
+    
+    // Camera Model
+    if (isset($exif['IFD0']['Model'])) {
+        $metadata['camera'] = trim($exif['IFD0']['Model']);
+    }
+    
+    // Lens Model
+    if (isset($exif['EXIF']['LensModel'])) {
+        $metadata['lens'] = trim($exif['EXIF']['LensModel']);
+    } elseif (isset($exif['EXIF']['UndefinedTag:0xA434'])) {
+        $metadata['lens'] = trim($exif['EXIF']['UndefinedTag:0xA434']);
+    }
+    
+    // ISO - try multiple possible fields
+    if (isset($exif['EXIF']['ISOSpeedRatings'])) {
+        $iso = $exif['EXIF']['ISOSpeedRatings'];
+        $metadata['iso'] = is_array($iso) ? (string)$iso[0] : (string)$iso;
+    } elseif (isset($exif['EXIF']['PhotographicSensitivity'])) {
+        $metadata['iso'] = (string)$exif['EXIF']['PhotographicSensitivity'];
+    }
+    
+    // Aperture (F-Number)
+    if (isset($exif['EXIF']['FNumber'])) {
+        $fNumber = $exif['EXIF']['FNumber'];
+        if (is_string($fNumber) && strpos($fNumber, '/') !== false) {
+            $parts = explode('/', $fNumber);
+            if (count($parts) == 2 && $parts[1] != 0) {
                 $fValue = $parts[0] / $parts[1];
                 $metadata['aperture'] = 'f/' . number_format($fValue, 1);
             }
-        } elseif (isset($exif['COMPUTED']['ApertureFNumber'])) {
-            $metadata['aperture'] = $exif['COMPUTED']['ApertureFNumber'];
+        } elseif (is_numeric($fNumber)) {
+            $metadata['aperture'] = 'f/' . number_format($fNumber, 1);
         }
-        
-        // Shutter Speed
-        if (isset($exif['EXIF']['ExposureTime'])) {
-            $metadata['shutterSpeed'] = $exif['EXIF']['ExposureTime'] . 's';
-        }
-        
-        // Focal Length
-        if (isset($exif['EXIF']['FocalLength'])) {
-            $focalLength = $exif['EXIF']['FocalLength'];
-            if (strpos($focalLength, '/') !== false) {
-                $parts = explode('/', $focalLength);
-                $focal = $parts[0] / $parts[1];
-                $metadata['focalLength'] = round($focal) . 'mm';
+    } elseif (isset($exif['COMPUTED']['ApertureFNumber'])) {
+        $metadata['aperture'] = $exif['COMPUTED']['ApertureFNumber'];
+    }
+    
+    // Shutter Speed / Exposure Time
+    if (isset($exif['EXIF']['ExposureTime'])) {
+        $exposure = $exif['EXIF']['ExposureTime'];
+        if (is_string($exposure) && strpos($exposure, '/') !== false) {
+            $parts = explode('/', $exposure);
+            if (count($parts) == 2 && $parts[1] != 0) {
+                $expValue = $parts[0] / $parts[1];
+                if ($expValue >= 1) {
+                    $metadata['shutterSpeed'] = number_format($expValue, 1) . 's';
+                } else {
+                    // Show as fraction for fast shutter speeds
+                    $metadata['shutterSpeed'] = $exposure . 's';
+                }
             }
-        }
-        
-        // Date Taken
-        if (isset($exif['EXIF']['DateTimeOriginal'])) {
-            $dateTime = $exif['EXIF']['DateTimeOriginal'];
-            $metadata['dateTaken'] = date('Y-m-d', strtotime($dateTime));
-        } elseif (isset($exif['IFD0']['DateTime'])) {
-            $dateTime = $exif['IFD0']['DateTime'];
-            $metadata['dateTaken'] = date('Y-m-d', strtotime($dateTime));
-        }
-        
-        // GPS Location (if available)
-        if (isset($exif['GPS']['GPSLatitude']) && isset($exif['GPS']['GPSLongitude'])) {
-            // You could use a reverse geocoding service here
-            // For now, just indicate GPS data is available
-            $metadata['hasGPS'] = true;
+        } else {
+            $metadata['shutterSpeed'] = $exposure . 's';
         }
     }
     
+    // Focal Length
+    if (isset($exif['EXIF']['FocalLength'])) {
+        $focalLength = $exif['EXIF']['FocalLength'];
+        if (is_string($focalLength) && strpos($focalLength, '/') !== false) {
+            $parts = explode('/', $focalLength);
+            if (count($parts) == 2 && $parts[1] != 0) {
+                $focal = $parts[0] / $parts[1];
+                $metadata['focalLength'] = round($focal) . 'mm';
+            }
+        } elseif (is_numeric($focalLength)) {
+            $metadata['focalLength'] = round($focalLength) . 'mm';
+        }
+    }
+    
+    // Date Taken
+    if (isset($exif['EXIF']['DateTimeOriginal'])) {
+        $dateTime = $exif['EXIF']['DateTimeOriginal'];
+        $timestamp = strtotime($dateTime);
+        if ($timestamp !== false) {
+            $metadata['dateTaken'] = date('Y-m-d', $timestamp);
+        }
+    } elseif (isset($exif['IFD0']['DateTime'])) {
+        $dateTime = $exif['IFD0']['DateTime'];
+        $timestamp = strtotime($dateTime);
+        if ($timestamp !== false) {
+            $metadata['dateTaken'] = date('Y-m-d', $timestamp);
+        }
+    }
+    
+    // GPS Location (if available)
+    if (isset($exif['GPS']['GPSLatitude']) && isset($exif['GPS']['GPSLongitude'])) {
+        // Convert GPS coordinates to decimal
+        $lat = gpsToDecimal($exif['GPS']['GPSLatitude'], $exif['GPS']['GPSLatitudeRef']);
+        $lon = gpsToDecimal($exif['GPS']['GPSLongitude'], $exif['GPS']['GPSLongitudeRef']);
+        
+        if ($lat !== null && $lon !== null) {
+            $metadata['gps'] = [
+                'latitude' => $lat,
+                'longitude' => $lon
+            ];
+            // You could add reverse geocoding here if needed
+        }
+    }
+    
+    // Log what metadata was found (for debugging)
+    if (!empty($metadata)) {
+        error_log("Extracted metadata from $filePath: " . json_encode($metadata));
+    } else {
+        error_log("No metadata extracted from $filePath");
+    }
+    
     return $metadata;
+}
+
+/**
+ * Convert GPS coordinates to decimal format
+ */
+function gpsToDecimal($coordinate, $hemisphere) {
+    if (!is_array($coordinate) || count($coordinate) < 3) {
+        return null;
+    }
+    
+    $degrees = count($coordinate) > 0 ? floatval($coordinate[0]) : 0;
+    $minutes = count($coordinate) > 1 ? floatval($coordinate[1]) : 0;
+    $seconds = count($coordinate) > 2 ? floatval($coordinate[2]) : 0;
+    
+    $decimal = $degrees + ($minutes / 60) + ($seconds / 3600);
+    
+    // Make negative if South or West
+    if ($hemisphere == 'S' || $hemisphere == 'W') {
+        $decimal *= -1;
+    }
+    
+    return $decimal;
 }
 
 /**

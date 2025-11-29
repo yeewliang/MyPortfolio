@@ -177,7 +177,7 @@
    */
   async function fetchNasImages() {
     // Use mock data for now - uncomment proxy line after uploading PHP to NAS
-    //const apiEndpoint = '/assets/mock-photos.json';
+    // const apiEndpoint = '/assets/mock-photos.json';
     const apiEndpoint = '/api/photos';
     
     const container = document.querySelector('.isotope-container');
@@ -186,17 +186,13 @@
     if (!container) return;
 
     try {
-      console.log('Fetching images from:', apiEndpoint);
       const response = await fetch(apiEndpoint);
-      
-      console.log('Response status:', response.status);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log('Received data:', data);
 
       // Check if data contains an error
       if (data.error) {
@@ -216,12 +212,9 @@
         if (loader) {
           loader.innerHTML = '<p class="text-warning">No images found in gallery.</p>';
         }
-        console.warn('No images returned from API');
         initIsotopeLayout();
         return;
       }
-
-      console.log(`Rendering ${images.length} images...`);
 
       images.forEach(image => {
         const item = document.createElement('div');
@@ -267,15 +260,7 @@
       // Init Isotope after adding items
       initIsotopeLayout();
 
-      console.log('Images rendered successfully');
-
     } catch (error) {
-      console.error('Error fetching images:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack
-      });
-      
       if (loader) {
         loader.innerHTML = `
           <div class="alert alert-danger" role="alert">
