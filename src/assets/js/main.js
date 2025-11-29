@@ -177,8 +177,8 @@
    */
   async function fetchNasImages() {
     // Use mock data for now - uncomment proxy line after uploading PHP to NAS
-    const apiEndpoint = '/assets/mock-photos.json';
-    // const apiEndpoint = '/api/photos';
+    //const apiEndpoint = '/assets/mock-photos.json';
+    const apiEndpoint = '/api/photos';
     
     const container = document.querySelector('.isotope-container');
     const loader = document.querySelector('#portfolio-loader');
