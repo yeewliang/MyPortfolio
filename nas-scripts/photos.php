@@ -26,6 +26,7 @@ $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 // Category mapping based on folder names
 $categoryMap = [
+    'placeholder' => 'filter-app',
     'portrait' => 'filter-portrait',
     'street' => 'filter-street',
     'architecture' => 'filter-architecture',
