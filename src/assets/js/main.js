@@ -226,10 +226,9 @@
           </a>
           <div class="portfolio-info">
             <h4>${image.title}</h4>
-            <p>${image.category}</p>
+            <!-- <p>${image.category}</p> -->
             ${metadataHTML}
             <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-            <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
           </div>
         `;
         container.appendChild(item);
