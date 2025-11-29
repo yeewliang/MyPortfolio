@@ -1,9 +1,11 @@
 <?php
 // photos.php - Host this on your Synology Web Station
 
-// Disable error display to prevent breaking JSON
+// Enable error logging but disable display to prevent breaking JSON
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php-errors.log');
 
 // CORS Configuration - MUST come ABSOLUTELY FIRST before ANY output
 header("Access-Control-Allow-Origin: *");
@@ -182,8 +184,10 @@ function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $category
                     }
                 }
                 
-                // Construct absolute URL
-                $imageUrl = $baseUrl . '/gallery/' . rawurlencode($relativeItemPath);
+                // Construct absolute URL - encode each path segment separately
+                $pathSegments = explode('/', $relativeItemPath);
+                $encodedSegments = array_map('rawurlencode', $pathSegments);
+                $imageUrl = $baseUrl . '/gallery/' . implode('/', $encodedSegments);
                 
                 $imageData = [
                     'src' => $imageUrl,
@@ -212,18 +216,50 @@ try {
     $baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
 
     if (!is_dir($imageDirectory)) {
-        echo json_encode(['error' => 'Directory not found', 'path' => realpath($imageDirectory)]);
+        $errorInfo = [
+            'error' => 'Directory not found',
+            'path' => $imageDirectory,
+            'realpath' => realpath($imageDirectory),
+            'cwd' => getcwd(),
+            '__DIR__' => __DIR__
+        ];
+        error_log('Photos.php error: ' . json_encode($errorInfo));
+        echo json_encode($errorInfo);
         exit;
     }
     
     // Scan images recursively
     $images = scanImagesRecursive($imageDirectory, $baseUrl, $allowedExtensions, $categoryMap);
     
+    // Log success
+    error_log('Photos.php: Successfully scanned ' . count($images) . ' images');
+    
+    // If no images found, return helpful debug info
+    if (empty($images)) {
+        $debugInfo = [
+            'error' => 'No images found',
+            'directory' => $imageDirectory,
+            'exists' => is_dir($imageDirectory),
+            'readable' => is_readable($imageDirectory),
+            'contents' => is_dir($imageDirectory) ? scandir($imageDirectory) : null
+        ];
+        error_log('Photos.php warning: ' . json_encode($debugInfo));
+        echo json_encode($debugInfo);
+        exit;
+    }
+    
     // Output JSON
     echo json_encode($images, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    $errorInfo = [
+        'error' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ];
+    error_log('Photos.php exception: ' . json_encode($errorInfo));
+    echo json_encode($errorInfo);
 }
 ?>

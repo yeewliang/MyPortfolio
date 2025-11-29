@@ -186,15 +186,42 @@
     if (!container) return;
 
     try {
+      console.log('Fetching images from:', apiEndpoint);
       const response = await fetch(apiEndpoint);
       
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
-      const images = await response.json();
+      const data = await response.json();
+      console.log('Received data:', data);
+
+      // Check if data contains an error
+      if (data.error) {
+        throw new Error(`API Error: ${data.error}${data.path ? ' - Path: ' + data.path : ''}`);
+      }
+
+      // Check if data is an array
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid response format: expected array of images');
+      }
+
+      const images = data;
 
       if (loader) loader.remove();
+
+      if (images.length === 0) {
+        if (loader) {
+          loader.innerHTML = '<p class="text-warning">No images found in gallery.</p>';
+        }
+        console.warn('No images returned from API');
+        initIsotopeLayout();
+        return;
+      }
+
+      console.log(`Rendering ${images.length} images...`);
 
       images.forEach(image => {
         const item = document.createElement('div');
@@ -242,10 +269,23 @@
       // Init Isotope after adding items
       initIsotopeLayout();
 
+      console.log('Images rendered successfully');
+
     } catch (error) {
       console.error('Error fetching images:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
+      
       if (loader) {
-        loader.innerHTML = '<p class="text-danger">Failed to load images. Please check console for details.</p>';
+        loader.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <h5>Failed to load images</h5>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <p class="mb-0"><small>Check browser console (F12) for more details</small></p>
+          </div>
+        `;
       }
       // Fallback: Init Isotope anyway so the layout doesn't break if there are static items (though we removed them)
       initIsotopeLayout();
