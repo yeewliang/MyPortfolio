@@ -4,20 +4,50 @@
         "title": "Mock Nature",
         "category": "filter-app",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "metadata": {
+            "camera": "Canon EOS R5",
+            "lens": "RF 24-105mm f/4L IS USM",
+            "iso": "400",
+            "aperture": "f/5.6",
+            "shutterSpeed": "1/250s",
+            "focalLength": "85mm",
+            "dateTaken": "2024-03-15",
+            "location": "Botanical Gardens"
+        }
     },
     {
         "src": "assets/img/portfolio/product-1.jpg",
         "title": "Mock Urban",
         "category": "filter-product",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "metadata": {
+            "camera": "Sony A7 IV",
+            "lens": "FE 24-70mm f/2.8 GM",
+            "iso": "800",
+            "aperture": "f/2.8",
+            "shutterSpeed": "1/125s",
+            "focalLength": "35mm",
+            "dateTaken": "2024-04-20",
+            "location": "Downtown District"
+        }
     },
     {
         "src": "assets/img/portfolio/branding-1.jpg",
         "title": "Mock Travel",
         "category": "filter-branding",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "metadata": {
+            "camera": "Nikon Z6 II",
+            "lens": "Z 50mm f/1.8 S",
+            "iso": "200",
+            "aperture": "f/2.0",
+            "shutterSpeed": "1/500s",
+            "focalLength": "50mm",
+            "dateTaken": "2024-05-10",
+            "location": "Mountain Vista"
+        }
     }
 ]

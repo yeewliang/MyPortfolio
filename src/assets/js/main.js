@@ -199,6 +199,27 @@
       images.forEach(image => {
         const item = document.createElement('div');
         item.className = `col-lg-4 col-md-6 portfolio-item isotope-item ${image.category}`;
+        
+        // Build metadata display
+        let metadataHTML = '';
+        if (image.metadata) {
+          const meta = image.metadata;
+          const metadataItems = [];
+          
+          if (meta.camera) metadataItems.push(`<i class="bi bi-camera"></i> ${meta.camera}`);
+          if (meta.lens) metadataItems.push(`<i class="bi bi-camera-reels"></i> ${meta.lens}`);
+          if (meta.iso) metadataItems.push(`<span>ISO ${meta.iso}</span>`);
+          if (meta.aperture) metadataItems.push(`<span>${meta.aperture}</span>`);
+          if (meta.shutterSpeed) metadataItems.push(`<span>${meta.shutterSpeed}</span>`);
+          if (meta.focalLength) metadataItems.push(`<span>${meta.focalLength}</span>`);
+          if (meta.dateTaken) metadataItems.push(`<i class="bi bi-calendar"></i> ${new Date(meta.dateTaken).toLocaleDateString()}`);
+          if (meta.location) metadataItems.push(`<i class="bi bi-geo-alt"></i> ${meta.location}`);
+          
+          if (metadataItems.length > 0) {
+            metadataHTML = `<div class="photo-metadata">${metadataItems.join(' <span class="separator">•</span> ')}</div>`;
+          }
+        }
+        
         item.innerHTML = `
           <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
             <img src="${image.src}" class="img-fluid" alt="${image.title}" loading="lazy">
@@ -206,6 +227,7 @@
           <div class="portfolio-info">
             <h4>${image.title}</h4>
             <p>${image.category}</p>
+            ${metadataHTML}
             <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
             <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
           </div>
