@@ -51,18 +51,6 @@ function getImageMetadata($filePath) {
     $exif = @exif_read_data($filePath, 0, true);
     
     if ($exif) {
-        // Camera model
-        if (isset($exif['IFD0']['Model'])) {
-            $metadata['camera'] = trim($exif['IFD0']['Model']);
-        }
-        
-        // Lens model
-        if (isset($exif['EXIF']['LensModel'])) {
-            $metadata['lens'] = trim($exif['EXIF']['LensModel']);
-        } elseif (isset($exif['EXIF']['UndefinedTag:0xA434'])) {
-            $metadata['lens'] = trim($exif['EXIF']['UndefinedTag:0xA434']);
-        }
-        
         // ISO
         if (isset($exif['EXIF']['ISOSpeedRatings'])) {
             $metadata['iso'] = (string)$exif['EXIF']['ISOSpeedRatings'];
@@ -221,11 +209,29 @@ try {
             'path' => $imageDirectory,
             'realpath' => realpath($imageDirectory),
             'cwd' => getcwd(),
-            '__DIR__' => __DIR__
+            '__DIR__' => __DIR__,
+            'script_filename' => $_SERVER['SCRIPT_FILENAME'] ?? 'not set',
+            'document_root' => $_SERVER['DOCUMENT_ROOT'] ?? 'not set'
         ];
         error_log('Photos.php error: ' . json_encode($errorInfo));
         echo json_encode($errorInfo);
         exit;
+    }
+    
+    // DETAILED DEBUG: Check what's in the directory
+    $directoryContents = [];
+    if (is_dir($imageDirectory)) {
+        $items = scandir($imageDirectory);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') continue;
+            $fullPath = $imageDirectory . '/' . $item;
+            $directoryContents[] = [
+                'name' => $item,
+                'is_dir' => is_dir($fullPath),
+                'is_readable' => is_readable($fullPath),
+                'size' => is_file($fullPath) ? filesize($fullPath) : 'N/A'
+            ];
+        }
     }
     
     // Scan images recursively
@@ -241,7 +247,8 @@ try {
             'directory' => $imageDirectory,
             'exists' => is_dir($imageDirectory),
             'readable' => is_readable($imageDirectory),
-            'contents' => is_dir($imageDirectory) ? scandir($imageDirectory) : null
+            'directory_contents' => $directoryContents,
+            'allowed_extensions' => $allowedExtensions
         ];
         error_log('Photos.php warning: ' . json_encode($debugInfo));
         echo json_encode($debugInfo);

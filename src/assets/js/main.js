@@ -233,8 +233,6 @@
           const meta = image.metadata;
           const metadataItems = [];
           
-          if (meta.camera) metadataItems.push(`<i class="bi bi-camera"></i> ${meta.camera}`);
-          if (meta.lens) metadataItems.push(`<i class="bi bi-camera-reels"></i> ${meta.lens}`);
           if (meta.iso) metadataItems.push(`<span>ISO ${meta.iso}</span>`);
           if (meta.aperture) metadataItems.push(`<span>${meta.aperture}</span>`);
           if (meta.shutterSpeed) metadataItems.push(`<span>${meta.shutterSpeed}</span>`);
