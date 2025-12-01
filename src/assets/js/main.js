@@ -279,7 +279,7 @@
             <h4>${image.title}</h4>
             <!-- <p>${image.category}</p> -->
             ${metadataHTML}
-            <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+            <a href="${image.src}" title="${image.title}" class="preview-link preview-icon"><i class="bi bi-zoom-in"></i></a>
           </div>
         `;
         
@@ -291,6 +291,18 @@
       // Re-init GLightbox for new elements
       const glightbox = GLightbox({
         selector: '.glightbox'
+      });
+
+      // Add click handlers for zoom icons to trigger main glightbox link
+      document.querySelectorAll('.preview-icon').forEach(icon => {
+        icon.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Find the main glightbox link in the same portfolio item
+          const mainLink = this.closest('.portfolio-item').querySelector('.glightbox');
+          if (mainLink) {
+            mainLink.click();
+          }
+        });
       });
 
       // Init Isotope after adding items
