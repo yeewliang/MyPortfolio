@@ -154,6 +154,9 @@
           filter: filter,
           sortBy: sort
         });
+        
+        // Store globally for later access
+        window.portfolioIsotope = initIsotope;
       });
 
       isotopeItem.querySelectorAll('.isotope-filters li').forEach(function (filters) {
@@ -238,9 +241,39 @@
           }
         }
         
+        // Create image element to detect orientation
+        const img = document.createElement('img');
+        img.src = image.src;
+        img.className = 'img-fluid';
+        img.alt = image.title;
+        img.loading = 'lazy';
+        
+        // Detect orientation after image loads
+        img.onload = function() {
+          const aspectRatio = this.naturalWidth / this.naturalHeight;
+          
+          // Portrait: height > width (aspect ratio < 1)
+          if (aspectRatio < 0.85) {
+            item.classList.add('portrait');
+          } 
+          // Landscape: width > height (aspect ratio > 1.2)
+          else if (aspectRatio > 1.2) {
+            item.classList.add('landscape');
+          }
+          // Square or near-square
+          else {
+            item.classList.add('square');
+          }
+          
+          // Re-layout isotope after orientation is detected
+          if (window.portfolioIsotope) {
+            window.portfolioIsotope.layout();
+          }
+        };
+        
         item.innerHTML = `
           <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
-            <img src="${image.src}" class="img-fluid" alt="${image.title}" loading="lazy">
+            <div class="portfolio-img-wrapper"></div>
           </a>
           <div class="portfolio-info">
             <h4>${image.title}</h4>
@@ -249,6 +282,9 @@
             <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
           </div>
         `;
+        
+        // Append the img to the wrapper
+        item.querySelector('.portfolio-img-wrapper').appendChild(img);
         container.appendChild(item);
       });
 
