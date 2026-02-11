@@ -32,6 +32,9 @@ ob_start();
 $imageDirectory = __DIR__ . '/gallery'; // Use the "gallery" subfolder inside this script's directory
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
+// Check if we're being called through a proxy (X-Forwarded-Host header)
+$useRelativeUrls = isset($_SERVER['HTTP_X_FORWARDED_PROTO']); // Simple proxy detection
+
 // Category mapping based on folder names
 $categoryMap = [
     'placeholder' => 'filter-app',
@@ -206,7 +209,7 @@ function gpsToDecimal($coordinate, $hemisphere) {
 /**
  * Recursively scan directory for images
  */
-function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $categoryMap, $relativePath = '') {
+function scanImagesRecursive($directory, $imageUrlBase, $allowedExtensions, $categoryMap, $relativePath = '') {
     $images = [];
     
     if (!is_dir($directory)) {
@@ -227,7 +230,7 @@ function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $category
         
         if (is_dir($fullPath)) {
             // Recursively scan subdirectory
-            $subImages = scanImagesRecursive($fullPath, $baseUrl, $allowedExtensions, $categoryMap, $relativeItemPath);
+            $subImages = scanImagesRecursive($fullPath, $imageUrlBase, $allowedExtensions, $categoryMap, $relativeItemPath);
             $images = array_merge($images, $subImages);
         } else {
             $extension = strtolower(pathinfo($item, PATHINFO_EXTENSION));
@@ -272,10 +275,10 @@ function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $category
                     }
                 }
                 
-                // Construct absolute URL - encode each path segment separately
+                // Construct image URL - encode each path segment separately
                 $pathSegments = explode('/', $relativeItemPath);
                 $encodedSegments = array_map('rawurlencode', $pathSegments);
-                $imageUrl = $baseUrl . '/gallery/' . implode('/', $encodedSegments);
+                $imageUrl = $imageUrlBase . '/' . implode('/', $encodedSegments);
                 
                 $imageData = [
                     'src' => $imageUrl,
@@ -315,7 +318,16 @@ function scanImagesRecursive($directory, $baseUrl, $allowedExtensions, $category
 try {
     // Helper to get base URL
     $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
-    $baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
+    
+    // Use relative paths if being proxied, absolute URLs otherwise
+    if ($useRelativeUrls) {
+        // When accessed through proxy, return relative URLs
+        $imageUrlBase = '/api/images';
+    } else {
+        // When accessed directly, use full URLs to assets domain
+        $baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
+        $imageUrlBase = $baseUrl . '/gallery';
+    }
 
     if (!is_dir($imageDirectory)) {
         // Clear any buffered output to ensure clean JSON response
@@ -353,7 +365,7 @@ try {
     }
     
     // Scan images recursively
-    $images = scanImagesRecursive($imageDirectory, $baseUrl, $allowedExtensions, $categoryMap);
+    $images = scanImagesRecursive($imageDirectory, $imageUrlBase, $allowedExtensions, $categoryMap);
     
     // Log success
     error_log('Photos.php: Successfully scanned ' . count($images) . ' images');
