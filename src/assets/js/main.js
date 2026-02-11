@@ -179,7 +179,12 @@
    * Fetch Images from Cloudinary via static photos.json
    */
   async function fetchPortfolioImages() {
-    const apiEndpoint = '/assets/photos.json';
+    const endpoints = [
+      'assets/photos.json',
+      '/assets/photos.json',
+      'assets/mock-photos.json',
+      '/assets/mock-photos.json'
+    ];
 
     const container = document.querySelector('.isotope-container');
     const loader = document.querySelector('#portfolio-loader');
@@ -187,16 +192,35 @@
     if (!container) return;
 
     try {
-      const response = await fetch(apiEndpoint);
+      let data = null;
+      let lastError = null;
+      let usedEndpoint = null;
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint);
+          if (!response.ok) {
+            lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+            continue;
+          }
+          data = await response.json();
+          usedEndpoint = endpoint;
+          break;
+        } catch (err) {
+          lastError = err;
+        }
       }
 
-      const data = await response.json();
+      if (!data) {
+        throw lastError || new Error('All photo endpoints failed');
+      }
 
       if (!Array.isArray(data)) {
         throw new Error('Invalid response format: expected array of images');
+      }
+
+      if (usedEndpoint && usedEndpoint.includes('mock-photos')) {
+        console.warn('Using mock photos — photos.json was not found.');
       }
 
       const images = data;
@@ -324,9 +348,16 @@
       console.error('Portfolio image load error:', error);
       if (loader) {
         loader.innerHTML = `
-          <div class="alert alert-warning" role="alert">
-            <h5>Could not load gallery</h5>
-            <p>${error.message}</p>
+          <div class="alert alert-danger" role="alert">
+            <h5>Failed to load images</h5>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <hr>
+            <p class="mb-1"><small><strong>Troubleshooting:</strong></small></p>
+            <ul class="mb-0" style="font-size: 0.875rem;">
+              <li>Ensure <code>photos.json</code> exists in <code>src/assets/</code></li>
+              <li>Start the dev server with <code>npm start</code> (serves from <code>src/</code>)</li>
+              <li>Check browser console (F12) for more details</li>
+            </ul>
           </div>
         `;
       }
