@@ -282,6 +282,8 @@
         img.className = 'img-fluid';
         img.alt = image.title;
         img.loading = 'lazy';
+        // Add decoding async for better performance
+        img.decoding = 'async';
 
         // Use known dimensions for immediate orientation class (avoids layout shift)
         if (image.width && image.height) {
@@ -310,9 +312,9 @@
         };
 
         item.innerHTML = `
-          <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
-            <div class="portfolio-img-wrapper"></div>
-          </a>
+            <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link" data-type="image">
+              <div class="portfolio-img-wrapper"></div>
+            </a>
           <div class="portfolio-info">
             <h4>${image.title}</h4>
             ${metadataHTML}
@@ -325,8 +327,15 @@
         container.appendChild(item);
       });
 
-      // Re-init GLightbox for new elements
-      const glightbox = GLightbox({
+      // Re-init GLightbox for new elements (destroy previous instance if present)
+      if (window._portfolioGlightbox) {
+        try {
+          window._portfolioGlightbox.destroy();
+        } catch (e) {
+          console.warn('Failed to destroy previous glightbox instance', e);
+        }
+      }
+      window._portfolioGlightbox = GLightbox({
         selector: '.glightbox'
       });
 
