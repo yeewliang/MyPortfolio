@@ -6,6 +6,9 @@
   "scripts": {
     "start": "npx http-server src -p 8000 -o",
     "dev": "npx http-server src -p 8000 -o",
+    "photos": "node upload_photos.js",
+    "photos:dry": "node upload_photos.js --dry-run",
+    "photos:force": "node upload_photos.js --force",
     "docker:build": "docker build -t my-portfolio .",
     "docker:run": "docker run -d -p 8080:80 --name my-portfolio my-portfolio",
     "docker:stop": "docker stop my-portfolio && docker rm my-portfolio",
@@ -35,6 +38,11 @@
   "homepage": "https://github.com/yeewliang/MyPortfolio#readme",
   "devDependencies": {
     "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "cloudinary": "^2.5.0",
+    "dotenv": "^16.4.0",
+    "exifreader": "^4.23.0"
   },
   "engines": {
     "node": ">=14.0.0"

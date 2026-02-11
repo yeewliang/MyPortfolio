@@ -7,6 +7,7 @@ A modern, responsive portfolio website showcasing the professional experience an
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Modern UI**: Clean and professional design using Bootstrap 5
 - **Interactive Sections**: Smooth scrolling navigation and animated elements
+- **Photography Gallery**: Dynamic photo gallery powered by Cloudinary CDN with EXIF metadata display
 - **Portfolio Showcase**: Dedicated sections for projects and achievements
 - **Contact Form**: Integrated contact form for easy communication
 - **Docker Support**: Containerized deployment with Nginx
@@ -29,6 +30,7 @@ The portfolio is deployed and accessible via Docker on Synology NAS. See [DEPLOY
 - **Framework**: Bootstrap 5.3.3
 - **Icons**: Bootstrap Icons
 - **Animations**: AOS (Animate On Scroll)
+- **Photo CDN**: Cloudinary (free tier)
 - **Build**: Docker with Nginx
 - **Template**: MyResume Bootstrap Template by BootstrapMade
 
@@ -45,8 +47,12 @@ The portfolio is deployed and accessible via Docker on Synology NAS. See [DEPLOY
 │   │   ├── css/          # Stylesheets
 │   │   ├── js/           # JavaScript files
 │   │   ├── img/          # Images and icons
+│   │   ├── photos.json   # Photo gallery data (generated)
 │   │   └── vendor/       # Third-party libraries
 │   └── forms/            # Contact form scripts
+├── gallery/              # Local photos by category (not committed)
+├── upload_photos.py      # Cloudinary upload & metadata script
+├── package.json          # Node.js dependencies & scripts
 ├── Dockerfile            # Docker configuration
 ├── nginx.conf           # Nginx web server configuration
 ├── docker-compose.yml   # Docker Compose setup

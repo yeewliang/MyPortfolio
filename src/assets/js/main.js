@@ -176,62 +176,27 @@
   }
 
   /**
-   * Fetch Images from NAS
+   * Fetch Images from Cloudinary via static photos.json
    */
-  async function fetchNasImages() {
-    // Use mock data for now - uncomment proxy line after uploading PHP to NAS
-    // const apiEndpoint = '/assets/mock-photos.json';
-    const apiEndpoint = '/api/photos';
-    
+  async function fetchPortfolioImages() {
+    const apiEndpoint = '/assets/photos.json';
+
     const container = document.querySelector('.isotope-container');
     const loader = document.querySelector('#portfolio-loader');
 
     if (!container) return;
 
     try {
-      const response = await fetch(apiEndpoint, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      
-      // Check response status
+      const response = await fetch(apiEndpoint);
+
       if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        let errorBody = '';
-        
-        try {
-          if (contentType && contentType.includes('application/json')) {
-            errorBody = await response.json();
-            errorBody = JSON.stringify(errorBody);
-          } else {
-            errorBody = await response.text();
-          }
-        } catch (e) {
-          errorBody = `[Could not parse response body: ${e.message}]`;
-        }
-        
-        throw new Error(`HTTP ${response.status} ${response.statusText}: ${errorBody}`);
+        throw new Error(`HTTP ${response.status} ${response.statusText}`);
       }
-      
-      // Verify content type is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const bodyPreview = await response.text();
-        throw new Error(`Invalid Content-Type: ${contentType}. Expected application/json. Response: ${bodyPreview.substring(0, 500)}`);
-      }
-      
+
       const data = await response.json();
 
-      // Check if data contains an error
-      if (data.error) {
-        throw new Error(`API Error: ${data.error}${data.path ? ' - Path: ' + data.path : ''}`);
-      }
-
-      // Check if data is an array
       if (!Array.isArray(data)) {
-        throw new Error('Invalid response format: expected array of images, got: ' + typeof data);
+        throw new Error('Invalid response format: expected array of images');
       }
 
       const images = data;
@@ -246,70 +211,91 @@
         return;
       }
 
+      // Track loaded images for batched Isotope layout
+      let loadedCount = 0;
+      const totalImages = images.length;
+      let layoutTimer = null;
+
+      function batchLayout() {
+        // Debounce layout calls — wait 150ms after last image load
+        if (layoutTimer) clearTimeout(layoutTimer);
+        layoutTimer = setTimeout(() => {
+          if (window.portfolioIsotope) {
+            window.portfolioIsotope.layout();
+          }
+        }, 150);
+      }
+
       images.forEach(image => {
         const item = document.createElement('div');
         item.className = `col-lg-4 col-md-6 portfolio-item isotope-item ${image.category}`;
-        
+
         // Build metadata display
         let metadataHTML = '';
         if (image.metadata) {
           const meta = image.metadata;
           const metadataItems = [];
-          
+
           if (meta.iso) metadataItems.push(`<span>ISO ${meta.iso}</span>`);
           if (meta.aperture) metadataItems.push(`<span>${meta.aperture}</span>`);
           if (meta.shutterSpeed) metadataItems.push(`<span>${meta.shutterSpeed}</span>`);
           if (meta.focalLength) metadataItems.push(`<span>${meta.focalLength}</span>`);
           if (meta.dateTaken) metadataItems.push(`<i class="bi bi-calendar"></i> ${new Date(meta.dateTaken).getFullYear()}`);
           if (meta.location) metadataItems.push(`<i class="bi bi-geo-alt"></i> ${meta.location}`);
-          
+
           if (metadataItems.length > 0) {
             metadataHTML = `<div class="photo-metadata">${metadataItems.join(' <span class="separator">•</span> ')}</div>`;
           }
         }
-        
+
+        // Use thumbnail URL for grid, full-size URL for lightbox
+        const thumbSrc = image.thumb || image.src;
+        const fullSrc = image.src;
+
         // Create image element to detect orientation
         const img = document.createElement('img');
-        img.src = image.src;
+        img.src = thumbSrc;
         img.className = 'img-fluid';
         img.alt = image.title;
         img.loading = 'lazy';
-        
-        // Detect orientation after image loads
-        img.onload = function() {
-          const aspectRatio = this.naturalWidth / this.naturalHeight;
-          
-          // Portrait: height > width (aspect ratio < 1)
-          if (aspectRatio < 0.85) {
-            item.classList.add('portrait');
-          } 
-          // Landscape: width > height (aspect ratio > 1.2)
-          else if (aspectRatio > 1.2) {
-            item.classList.add('landscape');
-          }
-          // Square or near-square
-          else {
-            item.classList.add('square');
-          }
-          
-          // Re-layout isotope after orientation is detected
-          if (window.portfolioIsotope) {
-            window.portfolioIsotope.layout();
-          }
+
+        // Use known dimensions for immediate orientation class (avoids layout shift)
+        if (image.width && image.height) {
+          const aspectRatio = image.width / image.height;
+          if (aspectRatio < 0.85) item.classList.add('portrait');
+          else if (aspectRatio > 1.2) item.classList.add('landscape');
+          else item.classList.add('square');
+        }
+
+        // Batched layout on image load
+        img.onload = function () {
+          loadedCount++;
+          batchLayout();
         };
-        
+
+        // Handle broken images gracefully
+        img.onerror = function () {
+          loadedCount++;
+          this.style.display = 'none';
+          const placeholder = document.createElement('div');
+          placeholder.className = 'img-placeholder d-flex align-items-center justify-content-center bg-light';
+          placeholder.style.height = '200px';
+          placeholder.innerHTML = '<i class="bi bi-image text-muted" style="font-size: 2rem;"></i>';
+          this.parentNode.appendChild(placeholder);
+          batchLayout();
+        };
+
         item.innerHTML = `
-          <a href="${image.src}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
+          <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link">
             <div class="portfolio-img-wrapper"></div>
           </a>
           <div class="portfolio-info">
             <h4>${image.title}</h4>
-            <!-- <p>${image.category}</p> -->
             ${metadataHTML}
-            <a href="${image.src}" title="${image.title}" class="preview-link preview-icon"><i class="bi bi-zoom-in"></i></a>
+            <a href="${fullSrc}" title="${image.title}" class="preview-link preview-icon"><i class="bi bi-zoom-in"></i></a>
           </div>
         `;
-        
+
         // Append the img to the wrapper
         item.querySelector('.portfolio-img-wrapper').appendChild(img);
         container.appendChild(item);
@@ -322,9 +308,8 @@
 
       // Add click handlers for zoom icons to trigger main glightbox link
       document.querySelectorAll('.preview-icon').forEach(icon => {
-        icon.addEventListener('click', function(e) {
+        icon.addEventListener('click', function (e) {
           e.preventDefault();
-          // Find the main glightbox link in the same portfolio item
           const mainLink = this.closest('.portfolio-item').querySelector('.glightbox');
           if (mainLink) {
             mainLink.click();
@@ -336,22 +321,21 @@
       initIsotopeLayout();
 
     } catch (error) {
+      console.error('Portfolio image load error:', error);
       if (loader) {
         loader.innerHTML = `
-          <div class="alert alert-danger" role="alert">
-            <h5>Failed to load images</h5>
-            <p><strong>Error:</strong> ${error.message}</p>
-            <p class="mb-0"><small>Check browser console (F12) for more details</small></p>
+          <div class="alert alert-warning" role="alert">
+            <h5>Could not load gallery</h5>
+            <p>${error.message}</p>
           </div>
         `;
       }
-      // Fallback: Init Isotope anyway so the layout doesn't break if there are static items (though we removed them)
       initIsotopeLayout();
     }
   }
 
   // Call fetch function on load
-  window.addEventListener('load', fetchNasImages);
+  window.addEventListener('load', fetchPortfolioImages);
 
   /**
    * Init swiper sliders

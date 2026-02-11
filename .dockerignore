@@ -5,3 +5,26 @@ docker-compose.yml
 .dockerignore
 logs
 *.md
+
+# Gallery source (photos are on Cloudinary)
+gallery/
+raw_images/
+ready_to_upload/
+
+# Upload tools
+upload_photos.js
+optimize_images.py
+requirements.txt
+.env
+.env.example
+.upload-cache.json
+
+# NAS scripts
+nas-scripts/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+node_modules/

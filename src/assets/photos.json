@@ -1,0 +1,76 @@
+[
+  {
+    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/q_auto,f_auto/portfolio/placeholder/Locomotive Engine",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_600,q_auto,f_auto/portfolio/placeholder/Locomotive Engine",
+    "title": "Locomotive Engine",
+    "category": "filter-app",
+    "width": 3013,
+    "height": 4520,
+    "metadata": {
+      "camera": "ILCE-6700",
+      "lens": "E 17-70mm F2.8 B070",
+      "iso": "5000",
+      "shutterSpeed": "1.0s",
+      "focalLength": "17mm",
+      "dateTaken": "2025-10-25",
+      "location": "Placeholder"
+    }
+  },
+  {
+    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/q_auto,f_auto/portfolio/street/Hong Kong Tramways",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_600,q_auto,f_auto/portfolio/street/Hong Kong Tramways",
+    "title": "Hong Kong Tramways",
+    "category": "filter-street",
+    "width": 4128,
+    "height": 6192,
+    "metadata": {
+      "camera": "ILCE-6700",
+      "lens": "E 17-70mm F2.8 B070",
+      "iso": "125",
+      "shutterSpeed": "1.0s",
+      "focalLength": "49mm",
+      "dateTaken": "2025-08-30",
+      "location": "Street"
+    }
+  },
+  {
+    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/q_auto,f_auto/portfolio/architecture/Deutsches Museum",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_600,q_auto,f_auto/portfolio/architecture/Deutsches Museum",
+    "title": "Deutsches Museum",
+    "category": "filter-architecture",
+    "width": 3024,
+    "height": 4032,
+    "metadata": {
+      "lens": "iPhone 14 Pro Max back camera 9mm f/2.8",
+      "iso": "32",
+      "shutterSpeed": "9.0s",
+      "focalLength": "9mm",
+      "dateTaken": "2023-10-21",
+      "gps": {
+        "latitude": 48.129558,
+        "longitude": 11.581244
+      },
+      "location": "Architecture"
+    }
+  },
+  {
+    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/q_auto,f_auto/portfolio/street/Bustling Marienplatz",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_600,q_auto,f_auto/portfolio/street/Bustling Marienplatz",
+    "title": "Bustling Marienplatz",
+    "category": "filter-street",
+    "width": 4032,
+    "height": 3024,
+    "metadata": {
+      "lens": "iPhone 14 Pro Max back camera 2.22mm f/2.2",
+      "iso": "40",
+      "shutterSpeed": "5.0s",
+      "focalLength": "2.2mm",
+      "dateTaken": "2023-10-20",
+      "gps": {
+        "latitude": 48.138456,
+        "longitude": 11.575225
+      },
+      "location": "Street"
+    }
+  }
+]

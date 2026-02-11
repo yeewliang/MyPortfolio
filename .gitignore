@@ -97,3 +97,9 @@ config.php
 
 # Docker volumes
 docker-data/
+
+# Cloudinary upload cache and local gallery
+.upload-cache.json
+gallery/
+raw_images/
+ready_to_upload/

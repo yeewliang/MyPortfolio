@@ -1,63 +1,103 @@
-# Image Optimization Tools Usage
+# Photo Gallery Management
 
-## 1. Python Optimization Script (`optimize_images.py`)
+## Overview
 
-This script resizes images and converts them to AVIF, WebP, and JPG formats.
+Photos are hosted on **Cloudinary CDN** (free tier). A Node.js script (`upload_photos.js`) handles:
+- Uploading photos to Cloudinary
+- Extracting EXIF metadata (camera, lens, ISO, aperture, shutter speed, focal length, date, GPS)
+- Generating `src/assets/photos.json` which the portfolio reads at runtime
 
-### Setup
-1.  Install dependencies:
-    ```bash
-    pip install Pillow pillow-avif-plugin
-    ```
-2.  Create a folder named `raw_images` in the same directory as the script.
-3.  Place your high-resolution images in `raw_images`.
+## Setup
 
-### Running
-Run the script:
+### 1. Cloudinary Account
+1. Sign up at https://cloudinary.com (free: 25 credits/month, ~25GB bandwidth)
+2. Go to Dashboard → copy your Cloud Name, API Key, and API Secret
+
+### 2. Environment Variables
 ```bash
+cp .env.example .env
+# Edit .env with your Cloudinary credentials
+```
+
+### 3. Install Dependencies
+```bash
+npm install
+```
+
+## Adding Photos
+
+1. Organize photos in `gallery/` by category:
+   ```
+   gallery/
+     landscape/
+       mountain-sunset.jpg
+       ocean-view.jpg
+     portrait/
+       studio-headshot.jpg
+     street/
+       night-market.jpg
+     architecture/
+       skyline.jpg
+   ```
+
+2. Run the upload script:
+   ```bash
+   npm run photos
+   ```
+
+3. Commit and push:
+   ```bash
+   git add src/assets/photos.json
+   git commit -m "Update gallery"
+   git push
+   ```
+
+## Script Options
+
+| Command | Description |
+|---------|-------------|
+| `npm run photos` | Upload new/changed photos, generate JSON |
+| `npm run photos:dry` | Extract metadata only, no Cloudinary upload |
+| `npm run photos:force` | Re-upload all photos (ignore cache) |
+| `node upload_photos.js --clean-cache` | Delete the upload cache file |
+
+## Category Mapping
+
+| Folder Name | CSS Class | Filter Button |
+|-------------|-----------|---------------|
+| `landscape` | `filter-landscape` | Landscape |
+| `portrait` | `filter-portrait` | Portrait |
+| `street` | `filter-street` | Street |
+| `architecture` | `filter-architecture` | Architecture |
+| `placeholder` | `filter-app` | App |
+
+Custom folders automatically map to `filter-<foldername>`.
+
+## How It Works
+
+```
+Local Machine                    Cloudinary CDN              Portfolio Site
+┌─────────────┐                 ┌───────────────┐          ┌──────────────┐
+│ gallery/    │  upload_photos  │ Auto-optimized │  <img>   │ Browser      │
+│  landscape/ │ ──────────────▶ │ WebP/AVIF      │ ◀─────── │ loads from   │
+│  portrait/  │   + EXIF data   │ Responsive     │          │ photos.json  │
+│  street/    │                 │ CDN-cached     │          │              │
+└─────────────┘                 └───────────────┘          └──────────────┘
+       │                                                          ▲
+       │  generates                                               │
+       └──────────▶ src/assets/photos.json ───── git push ────────┘
+```
+
+## Image Optimization (`optimize_images.py`)
+
+Optional pre-processing script for local format conversion:
+
+```bash
+pip install Pillow pillow-avif-plugin
+mkdir raw_images
+# Place high-res images in raw_images/
 python optimize_images.py
-```
-The optimized images will be saved in the `ready_to_upload` folder. You can then upload these to your NAS.
-
-## 2. React Component (`NasImage.jsx`)
-
-This component loads the optimized images from your NAS.
-
-### Environment Variable
-Ensure you have the `VITE_NAS_BASE_URL` set in your `.env` file:
-```
-VITE_NAS_BASE_URL=https://assets.weiliangyee.dev
+# Optimized images saved to ready_to_upload/
 ```
 
-### Usage Example
-
-```jsx
-import React from 'react';
-import NasImage from './components/NasImage';
-
-const PhotographyGallery = () => {
-  return (
-    <div className="gallery-grid">
-      <NasImage
-        folder="photography/landscape"
-        filename="mountain-sunset" // Do not include extension
-        alt="Sunset over the mountains"
-        width={800}
-        height={600}
-        className="gallery-item"
-      />
-      
-      <NasImage
-        folder="photography/urban"
-        filename="city-lights"
-        alt="City lights at night"
-        width={800}
-        height={600}
-        className="gallery-item"
-      />
-    </div>
-  );
-};
-
-export default PhotographyGallery;
-```
+> **Note:** Cloudinary handles format conversion (WebP/AVIF) and resizing automatically via URL transforms, so this script is only needed if you want local copies in multiple formats.
