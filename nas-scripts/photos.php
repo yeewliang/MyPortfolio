@@ -7,11 +7,17 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php-errors.log');
 
-// CORS Configuration - MUST come ABSOLUTELY FIRST before ANY output
+// Set the content type BEFORE any output
+header('Content-Type: application/json; charset=utf-8');
+
+// CORS Configuration - MUST come early
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Max-Age: 86400"); // Cache preflight for 24 hours
+
+// Set UTF-8 encoding to prevent encoding issues
+header("Content-Encoding: UTF-8");
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -19,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Set content type
-header('Content-Type: application/json; charset=utf-8');
+// Start output buffering to catch any unexpected output
+ob_start();
 
 // Configuration
 $imageDirectory = __DIR__ . '/gallery'; // Use the "gallery" subfolder inside this script's directory
@@ -312,6 +318,10 @@ try {
     $baseUrl = "$protocol://$_SERVER[HTTP_HOST]";
 
     if (!is_dir($imageDirectory)) {
+        // Clear any buffered output to ensure clean JSON response
+        ob_end_clean();
+        http_response_code(404);
+        
         $errorInfo = [
             'error' => 'Directory not found',
             'path' => $imageDirectory,
@@ -350,6 +360,10 @@ try {
     
     // If no images found, return helpful debug info
     if (empty($images)) {
+        // Clear any buffered output to ensure clean JSON response
+        ob_end_clean();
+        http_response_code(200);
+        
         $debugInfo = [
             'error' => 'No images found',
             'directory' => $imageDirectory,
@@ -363,11 +377,16 @@ try {
         exit;
     }
     
-    // Output JSON
+    // Clear output buffer and output clean JSON
+    ob_end_clean();
+    http_response_code(200);
     echo json_encode($images, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     
 } catch (Exception $e) {
+    // Clear any buffered output to ensure clean JSON response
+    ob_end_clean();
     http_response_code(500);
+    
     $errorInfo = [
         'error' => $e->getMessage(),
         'file' => $e->getFile(),

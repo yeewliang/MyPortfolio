@@ -189,10 +189,37 @@
     if (!container) return;
 
     try {
-      const response = await fetch(apiEndpoint);
+      const response = await fetch(apiEndpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
       
+      // Check response status
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const contentType = response.headers.get('content-type');
+        let errorBody = '';
+        
+        try {
+          if (contentType && contentType.includes('application/json')) {
+            errorBody = await response.json();
+            errorBody = JSON.stringify(errorBody);
+          } else {
+            errorBody = await response.text();
+          }
+        } catch (e) {
+          errorBody = `[Could not parse response body: ${e.message}]`;
+        }
+        
+        throw new Error(`HTTP ${response.status} ${response.statusText}: ${errorBody}`);
+      }
+      
+      // Verify content type is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const bodyPreview = await response.text();
+        throw new Error(`Invalid Content-Type: ${contentType}. Expected application/json. Response: ${bodyPreview.substring(0, 500)}`);
       }
       
       const data = await response.json();
@@ -204,7 +231,7 @@
 
       // Check if data is an array
       if (!Array.isArray(data)) {
-        throw new Error('Invalid response format: expected array of images');
+        throw new Error('Invalid response format: expected array of images, got: ' + typeof data);
       }
 
       const images = data;
