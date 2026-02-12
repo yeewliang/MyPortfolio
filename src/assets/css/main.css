@@ -743,6 +743,33 @@ section,
   font-size: 16px;
 }
 
+.resume .qr-code-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.resume .qr-code-img:hover {
+  transform: scale(1.05);
+}
+
+.resume .qr-code-label {
+  margin-top: 10px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  z-index: 0;
+}
+
+.resume .qr-code-label p {
+  padding: 2;
+  margin: 2;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+  font-size: 16px;
+}
+
 .resume .resume-item {
   padding: 0 0 20px 20px;
   margin-top: -2px;
