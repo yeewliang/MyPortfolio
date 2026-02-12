@@ -1,9 +1,9 @@
 [
   {
-    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/placeholder/locomotive-engine",
-    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/placeholder/locomotive-engine",
+    "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/travel/locomotive-engine",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/travel/locomotive-engine",
     "title": "Locomotive Engine",
-    "category": "filter-app",
+    "category": "filter-travel",
     "width": 3013,
     "height": 4520,
     "metadata": {
@@ -13,7 +13,7 @@
       "shutterSpeed": "1.0s",
       "focalLength": "17mm",
       "dateTaken": "2025-10-25",
-      "location": "Placeholder"
+      "location": "Travel"
     }
   },
   {
