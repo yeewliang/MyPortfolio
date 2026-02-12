@@ -1,7 +1,7 @@
 [
   {
     "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/placeholder/locomotive-engine",
-    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_400,h_600,q_70,f_auto/portfolio/placeholder/locomotive-engine",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/placeholder/locomotive-engine",
     "title": "Locomotive Engine",
     "category": "filter-app",
     "width": 3013,
@@ -18,7 +18,7 @@
   },
   {
     "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/street/hong-kong-tramways",
-    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_400,h_600,q_70,f_auto/portfolio/street/hong-kong-tramways",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/street/hong-kong-tramways",
     "title": "Hong Kong Tramways",
     "category": "filter-street",
     "width": 4128,
@@ -35,7 +35,7 @@
   },
   {
     "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/architecture/deutsches-museum",
-    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_400,h_600,q_70,f_auto/portfolio/architecture/deutsches-museum",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/architecture/deutsches-museum",
     "title": "Deutsches Museum",
     "category": "filter-architecture",
     "width": 3024,
@@ -55,7 +55,7 @@
   },
   {
     "src": "https://res.cloudinary.com/dge3dpv0h/image/upload/w_1200,q_75,f_auto,dpr_auto/portfolio/street/bustling-marienplatz",
-    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,w_400,h_600,q_70,f_auto/portfolio/street/bustling-marienplatz",
+    "thumb": "https://res.cloudinary.com/dge3dpv0h/image/upload/c_fill,g_auto,w_400,h_600,q_70,f_auto/portfolio/street/bustling-marienplatz",
     "title": "Bustling Marienplatz",
     "category": "filter-street",
     "width": 4032,

@@ -312,7 +312,7 @@
         };
 
         item.innerHTML = `
-            <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery-${image.category}" class="glightbox preview-link" data-type="image">
+            <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery" class="glightbox preview-link" data-type="image">
               <div class="portfolio-img-wrapper"></div>
             </a>
           <div class="portfolio-info">

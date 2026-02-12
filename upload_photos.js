@@ -412,7 +412,7 @@ async function main() {
 
     entries.push({
       src: buildCloudinaryUrl(publicId, "w_1200,q_75,f_auto,dpr_auto"),
-      thumb: buildCloudinaryUrl(publicId, "c_fill,w_400,h_600,q_70,f_auto"),
+      thumb: buildCloudinaryUrl(publicId, "c_fill,g_auto,w_400,h_600,q_70,f_auto"),
       title: titleFromFilename(path.basename(img.path)),
       category: img.cssCategory,
       width,
