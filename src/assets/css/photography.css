@@ -2,22 +2,18 @@
 # Photography Page – Supplemental Styles
 --------------------------------------------------------------*/
 
-/* ── Hero banner ─────────────────────────────────────────── */
-.photography-hero {
-  padding: 80px 0 60px;
-  position: relative;
-  overflow: hidden;
+/* ── Smooth scrolling ────────────────────────────────────── */
+.photography-page {
+  scroll-behavior: smooth;
 }
 
-/* Subtle dark-overlay gradient so text stays readable */
-.photography-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,
-      rgba(5, 99, 187, 0.85) 0%,
-      rgba(6, 6, 6, 0.80) 100%);
-  z-index: 0;
+/* ── Hero banner ─────────────────────────────────────────── */
+.photography-hero {
+  padding: 70px 0 50px;
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-color);
+  color: #ffffff;
 }
 
 .photography-hero .container {
@@ -26,38 +22,37 @@
 }
 
 .photography-hero-icon {
-  font-size: 3.5rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 16px;
+  font-size: 2.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 14px;
 }
 
 .photography-hero h1 {
-  font-size: 2.8rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-family: var(--heading-font);
 }
 
 .photography-hero p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 6px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.80);
+  margin-bottom: 4px;
   max-width: 540px;
 }
 
 .photography-hero-sub {
-  font-size: 0.9rem !important;
-  color: rgba(255, 255, 255, 0.60) !important;
+  font-size: 0.85rem !important;
+  color: rgba(255, 255, 255, 0.55) !important;
   margin-top: 4px;
 }
 
-/* ── Offset main content so sidebar doesn't overlap ─────── */
-@media (min-width: 1200px) {
+/* ── Full-width hero across the viewport ─────────────────── */
+@media (min-width: 1200px) and (max-width: 1600px) {
   .photography-page .photography-hero {
     margin-left: -160px;
     width: 100vw;
-    padding-left: 160px;
   }
 }
 
