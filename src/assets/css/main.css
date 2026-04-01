@@ -676,38 +676,64 @@ section,
 /*--------------------------------------------------------------
 # Skills Section
 --------------------------------------------------------------*/
-.skills .progress {
-  height: 60px;
-  display: block;
-  background: none;
-  border-radius: 0;
+.skills .tech-category {
+  background-color: var(--surface-color);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  border-radius: 8px;
+  padding: 25px 30px;
+  height: 100%;
+  transition: border-color 0.3s ease;
 }
 
-.skills .progress .skill {
+.skills .tech-category:hover {
+  border-color: color-mix(in srgb, var(--accent-color), transparent 50%);
+}
+
+.skills .tech-category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.skills .tech-category-header i {
+  font-size: 24px;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.skills .tech-category-header h3 {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--heading-color);
-  padding: 0;
-  margin: 0 0 6px 0;
-  text-transform: uppercase;
-  display: block;
-  font-weight: 600;
+  margin: 0;
   font-family: var(--heading-font);
 }
 
-.skills .progress .skill .val {
-  float: right;
-  font-style: normal;
+.skills .tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.skills .progress-bar-wrap {
-  background: color-mix(in srgb, var(--default-color), transparent 90%);
-  height: 10px;
+.skills .tech-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--heading-color);
+  background-color: color-mix(in srgb, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  cursor: default;
+  white-space: nowrap;
 }
 
-.skills .progress-bar {
-  width: 1px;
-  height: 10px;
-  transition: 0.9s;
-  background-color: var(--accent-color);
+.skills .tech-badge:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 80%);
+  border-color: color-mix(in srgb, var(--accent-color), transparent 60%);
+  color: var(--default-color);
 }
 
 /*--------------------------------------------------------------
