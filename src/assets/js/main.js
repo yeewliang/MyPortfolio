@@ -10,6 +10,15 @@
   "use strict";
 
   /**
+   * Escape HTML special characters to prevent XSS
+   */
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  /**
    * Header toggle
    */
   const headerToggleBtn = document.querySelector('.header-toggle');
@@ -19,7 +28,9 @@
     headerToggleBtn.classList.toggle('bi-list');
     headerToggleBtn.classList.toggle('bi-x');
   }
-  headerToggleBtn.addEventListener('click', headerToggle);
+  if (headerToggleBtn) {
+    headerToggleBtn.addEventListener('click', headerToggle);
+  }
 
   /**
    * Hide mobile nav on same-page/hash links
@@ -65,13 +76,15 @@
       window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTop) {
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
+  }
 
   window.addEventListener('load', toggleScrollTop);
   document.addEventListener('scroll', toggleScrollTop);
@@ -120,9 +133,6 @@
   /**
    * Init isotope layout and filters
    */
-  /**
-   * Init isotope layout and filters
-   */
   function initIsotopeLayout() {
     document.querySelectorAll('.isotope-layout').forEach(function (isotopeItem) {
       let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
@@ -146,9 +156,11 @@
         filters.addEventListener('click', function () {
           isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
           this.classList.add('filter-active');
-          initIsotope.arrange({
-            filter: this.getAttribute('data-filter')
-          });
+          if (initIsotope) {
+            initIsotope.arrange({
+              filter: this.getAttribute('data-filter')
+            });
+          }
           if (typeof aosInit === 'function') {
             aosInit();
           }
@@ -243,12 +255,12 @@
           const meta = image.metadata;
           const metadataItems = [];
 
-          if (meta.iso) metadataItems.push(`<span>ISO ${meta.iso}</span>`);
-          if (meta.aperture) metadataItems.push(`<span>${meta.aperture}</span>`);
-          if (meta.shutterSpeed) metadataItems.push(`<span>${meta.shutterSpeed}</span>`);
-          if (meta.focalLength) metadataItems.push(`<span>${meta.focalLength}</span>`);
+          if (meta.iso) metadataItems.push(`<span>ISO ${escapeHTML(String(meta.iso))}</span>`);
+          if (meta.aperture) metadataItems.push(`<span>${escapeHTML(String(meta.aperture))}</span>`);
+          if (meta.shutterSpeed) metadataItems.push(`<span>${escapeHTML(String(meta.shutterSpeed))}</span>`);
+          if (meta.focalLength) metadataItems.push(`<span>${escapeHTML(String(meta.focalLength))}</span>`);
           if (meta.dateTaken) metadataItems.push(`<i class="bi bi-calendar"></i> ${new Date(meta.dateTaken).getFullYear()}`);
-          if (meta.location) metadataItems.push(`<i class="bi bi-geo-alt"></i> ${meta.location}`);
+          if (meta.location) metadataItems.push(`<i class="bi bi-geo-alt"></i> ${escapeHTML(String(meta.location))}`);
 
           if (metadataItems.length > 0) {
             metadataHTML = `<div class="photo-metadata">${metadataItems.join(' <span class="separator">•</span> ')}</div>`;
@@ -294,14 +306,17 @@
           batchLayout();
         };
 
+        const safeTitle = escapeHTML(image.title || '');
+        const safeSrc = escapeHTML(fullSrc || '');
+
         item.innerHTML = `
-            <a href="${fullSrc}" title="${image.title}" data-gallery="portfolio-gallery" class="glightbox preview-link" data-type="image">
+            <a href="${safeSrc}" title="${safeTitle}" data-gallery="portfolio-gallery" class="glightbox preview-link" data-type="image">
               <div class="portfolio-img-wrapper"></div>
             </a>
           <div class="portfolio-info">
-            <h4>${image.title}</h4>
+            <h4>${safeTitle}</h4>
             ${metadataHTML}
-            <a href="${fullSrc}" title="${image.title}" class="preview-link preview-icon"><i class="bi bi-zoom-in"></i></a>
+            <a href="${safeSrc}" title="${safeTitle}" class="preview-link preview-icon"><i class="bi bi-zoom-in"></i></a>
           </div>
         `;
 
@@ -342,7 +357,7 @@
         loader.innerHTML = `
           <div class="alert alert-danger" role="alert">
             <h5>Failed to load images</h5>
-            <p><strong>Error:</strong> ${error.message}</p>
+            <p><strong>Error:</strong> ${escapeHTML(error.message || 'Unknown error')}</p>
             <hr>
             <p class="mb-1"><small><strong>Troubleshooting:</strong></small></p>
             <ul class="mb-0" style="font-size: 0.875rem;">
