@@ -676,38 +676,85 @@ section,
 /*--------------------------------------------------------------
 # Skills Section
 --------------------------------------------------------------*/
-.skills .progress {
-  height: 60px;
-  display: block;
-  background: none;
-  border-radius: 0;
+.skills .skill-category {
+  background: var(--surface-color);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  border-radius: 10px;
+  padding: 25px;
+  height: 100%;
+  transition: border-color 0.3s ease;
 }
 
-.skills .progress .skill {
-  color: var(--heading-color);
-  padding: 0;
-  margin: 0 0 6px 0;
-  text-transform: uppercase;
-  display: block;
+.skills .skill-category:hover {
+  border-color: color-mix(in srgb, var(--accent-color), transparent 50%);
+}
+
+.skills .skill-category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.skills .skill-category-header i {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+.skills .skill-category-header h3 {
+  font-size: 1.1rem;
   font-weight: 600;
+  color: var(--heading-color);
+  margin: 0;
   font-family: var(--heading-font);
 }
 
-.skills .progress .skill .val {
-  float: right;
-  font-style: normal;
+.skills .skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.skills .progress-bar-wrap {
-  background: color-mix(in srgb, var(--default-color), transparent 90%);
-  height: 10px;
+.skills .skill-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--heading-color);
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 75%);
+  border-radius: 20px;
+  transition: all 0.25s ease;
 }
 
-.skills .progress-bar {
-  width: 1px;
-  height: 10px;
-  transition: 0.9s;
-  background-color: var(--accent-color);
+.skills .skill-tag:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 80%);
+  border-color: var(--accent-color);
+}
+
+/*--------------------------------------------------------------
+# About Experience Badge
+--------------------------------------------------------------*/
+.about-experience-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 75%);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--heading-color);
+}
+
+.about-experience-badge i {
+  font-size: 1.2rem;
+  color: var(--accent-color);
+}
+
+.about-experience-badge strong {
+  color: var(--accent-color);
+  font-size: 1.3rem;
 }
 
 /*--------------------------------------------------------------
