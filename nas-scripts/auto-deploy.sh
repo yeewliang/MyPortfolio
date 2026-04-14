@@ -3,6 +3,12 @@
 # --- CONFIGURATION ---
 PROJECT_DIR="/volume1/docker/portfolio/MyPortfolio"
 LOG_FILE="$PROJECT_DIR/deploy_log.txt"
+MAX_LOG_SIZE=1048576  # 1 MB — rotate beyond this
+
+# Rotate log if it grows too large
+if [ -f "$LOG_FILE" ] && [ "$(stat -c%s "$LOG_FILE" 2>/dev/null || echo 0)" -gt "$MAX_LOG_SIZE" ]; then
+    mv "$LOG_FILE" "${LOG_FILE}.old"
+fi
 
 # Redirect all output to a log file for debugging
 exec > >(tee -a "$LOG_FILE") 2>&1

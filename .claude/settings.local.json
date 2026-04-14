@@ -4,7 +4,12 @@
       "Bash(grep -E '\\\\.\\(html|js\\)$')",
       "Bash(npx http-server:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(du -sh *)",
+      "Bash(ls -la src/*.html)",
+      "Bash(npm outdated:*)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('package.json'\\)\\)\")",
+      "Bash(node --check src/assets/js/main.js)"
     ]
   }
 }

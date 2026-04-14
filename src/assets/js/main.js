@@ -9,6 +9,20 @@
 (function () {
   "use strict";
 
+  const CONFIG = {
+    birthYear: 1988,
+    scrollTopThreshold: 100,
+    scrollspyOffset: 10,
+    layoutDebounceMs: 150,
+    hashScrollDelayMs: 100,
+    typed: { typeSpeed: 100, backSpeed: 50, backDelay: 2000 },
+    aos: { duration: 600, easing: 'ease-in-out', once: true, mirror: false },
+    aspectRatio: { portraitMax: 0.85, landscapeMin: 1.2 }
+  };
+
+  const portfolio = {};
+  window.portfolio = portfolio;
+
   /**
    * Header toggle
    */
@@ -62,10 +76,10 @@
 
   function toggleScrollTop() {
     if (scrollTop) {
-      window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+      window.scrollY > CONFIG.scrollTopThreshold ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
+  if (scrollTop) scrollTop.addEventListener('click', (e) => {
     e.preventDefault();
     window.scrollTo({
       top: 0,
@@ -80,12 +94,7 @@
    * Animation on scroll function and init
    */
   function aosInit() {
-    AOS.init({
-      duration: 600,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
+    AOS.init(CONFIG.aos);
   }
   window.addEventListener('load', aosInit);
 
@@ -99,9 +108,7 @@
     new Typed('.typed', {
       strings: typed_strings,
       loop: true,
-      typeSpeed: 100,
-      backSpeed: 50,
-      backDelay: 2000
+      ...CONFIG.typed
     });
   }
 
@@ -138,8 +145,7 @@
           sortBy: sort
         });
         
-        // Store globally for later access
-        window.portfolioIsotope = initIsotope;
+        portfolio.isotope = initIsotope;
       });
 
       isotopeItem.querySelectorAll('.isotope-filters li').forEach(function (filters) {
@@ -224,13 +230,10 @@
       let layoutTimer = null;
 
       function batchLayout() {
-        // Debounce layout calls — wait 150ms after last image load
         if (layoutTimer) clearTimeout(layoutTimer);
         layoutTimer = setTimeout(() => {
-          if (window.portfolioIsotope) {
-            window.portfolioIsotope.layout();
-          }
-        }, 150);
+          if (portfolio.isotope) portfolio.isotope.layout();
+        }, CONFIG.layoutDebounceMs);
       }
 
       images.forEach(image => {
@@ -271,8 +274,8 @@
         // Use known dimensions for immediate orientation class (avoids layout shift)
         if (image.width && image.height) {
           const aspectRatio = image.width / image.height;
-          if (aspectRatio < 0.85) item.classList.add('portrait');
-          else if (aspectRatio > 1.2) item.classList.add('landscape');
+          if (aspectRatio < CONFIG.aspectRatio.portraitMax) item.classList.add('portrait');
+          else if (aspectRatio > CONFIG.aspectRatio.landscapeMin) item.classList.add('landscape');
           else item.classList.add('square');
         }
 
@@ -310,17 +313,10 @@
         container.appendChild(item);
       });
 
-      // Re-init GLightbox for new elements (destroy previous instance if present)
-      if (window._portfolioGlightbox) {
-        try {
-          window._portfolioGlightbox.destroy();
-        } catch (e) {
-          console.warn('Failed to destroy previous glightbox instance', e);
-        }
+      if (portfolio.glightbox) {
+        try { portfolio.glightbox.destroy(); } catch (e) { /* ignore */ }
       }
-      window._portfolioGlightbox = GLightbox({
-        selector: '.glightbox'
-      });
+      portfolio.glightbox = GLightbox({ selector: '.glightbox' });
 
       // Add click handlers for zoom icons to trigger main glightbox link
       document.querySelectorAll('.preview-icon').forEach(icon => {
@@ -392,7 +388,7 @@
             top: section.offsetTop - parseInt(scrollMarginTop),
             behavior: 'smooth'
           });
-        }, 100);
+        }, CONFIG.hashScrollDelayMs);
       }
     }
   });
@@ -419,7 +415,7 @@
       if (navmenulink.hash === '#contact' && (scrollY + viewportHeight >= documentHeight)) {
         document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
         navmenulink.classList.add('active');
-      } else if (scrollY + 10 >= sectionTop && scrollY + 10 < sectionBottom) {
+      } else if (scrollY + CONFIG.scrollspyOffset >= sectionTop && scrollY + CONFIG.scrollspyOffset < sectionBottom) {
         document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
         navmenulink.classList.add('active');
       } else {
@@ -439,10 +435,9 @@
   }
 
   function displayAge() {
-    const birthYear = 1988; // Replace with the actual birth year
     const ageElement = document.querySelector('.currentage');
     if (ageElement) {
-      ageElement.innerText = calculateAge(birthYear);
+      ageElement.innerText = calculateAge(CONFIG.birthYear);
     }
   }
 
