@@ -1,0 +1,144 @@
+{
+  "site": {
+    "title": "Yee Wei Liang's Portfolio",
+    "description": "Portfolio of Yee Wei Liang, a Staff Analyst Data Scientist with a strong focus on machine learning and computer vision.",
+    "keywords": "Yee Wei Liang, Data Scientist, Machine Learning, Computer Vision, Portfolio",
+    "name": "Yee Wei Liang"
+  },
+  "hero": {
+    "name": "Yee Wei Liang",
+    "typedRoles": ["Data Scientist", "Developer", "Certified ScrumMaster"]
+  },
+  "socials": [
+    { "label": "LinkedIn profile", "icon": "bi-linkedin", "url": "https://www.linkedin.com/in/wei-liang-yee" },
+    { "label": "GitHub profile", "icon": "bi-github", "url": "https://github.com/yeewliang" }
+  ],
+  "about": {
+    "intro": "I am currently a Staff Analyst Data Scientist with a strong focus on machine learning and computer vision, backed by hands-on experience in maritime and manufacturing industries. With a solid foundation in industrial software integration and project management (IPMA Level D), I deliver innovative solutions that optimize performance and drive efficiency.",
+    "headline": "Data Scientist & Project Manager",
+    "subheadline": "Versatile Data Scientist with expertise in data science, software development and project management.",
+    "profileImage": "assets/img/profile-img.jpg",
+    "facts": [
+      { "label": "Highest Qualification", "value": "Master of Technology" },
+      { "label": "Email", "value": "weiliang.yee [at] gmail.com" },
+      { "label": "City", "value": "Singapore" },
+      { "label": "Hobbies/Interest", "value": "Photography (Street, Architecture, Portrait), Reading, Movies" }
+    ]
+  },
+  "skills": [
+    {
+      "icon": "bi-graph-up",
+      "title": "Data Science & ML",
+      "tags": ["Machine Learning", "Computer Vision", "Predictive Maintenance", "Pattern Recognition", "OCR", "Tableau"]
+    },
+    {
+      "icon": "bi-code-slash",
+      "title": "Programming",
+      "tags": ["Python", "SQL", "HTML / CSS", "JavaScript"]
+    },
+    {
+      "icon": "bi-diagram-3",
+      "title": "System & Architecture",
+      "tags": ["System Design", "System Architecture", "End-to-End Pipelines", "ETL", "Selenium"]
+    },
+    {
+      "icon": "bi-kanban",
+      "title": "Project Management",
+      "tags": ["Agile / Scrum (CSM)", "IPMA Level D", "Cross-functional Leadership"]
+    },
+    {
+      "icon": "bi-palette",
+      "title": "Design",
+      "tags": ["UX Design", "Prototyping"]
+    }
+  ],
+  "resume": {
+    "cvUrl": "https://gofile.me/7QnRn/vt8KRdFZ3",
+    "cvQrImage": "assets/img/resumeQR.png",
+    "education": [
+      {
+        "degree": "Master of Technology (Intelligent Systems)",
+        "period": "2021 - 2022",
+        "institution": "National University of Singapore",
+        "certificates": [
+          "Intelligent Reasoning Systems",
+          "Pattern Recognition Systems",
+          "Intelligent Sensing Systems",
+          "Intelligent Robotic Systems"
+        ]
+      },
+      {
+        "degree": "Bachelor of Computer Engineering (Hons.)",
+        "period": "2008-2012",
+        "institution": "National University of Singapore"
+      }
+    ],
+    "certifications": [
+      {
+        "degree": "User Experience Design Bootcamp",
+        "period": "2024",
+        "institution": "Vertical Institute"
+      },
+      {
+        "degree": "Certified Scrum Master",
+        "period": "2024",
+        "institution": "Scrum Alliance"
+      }
+    ],
+    "experience": [
+      {
+        "role": "Staff Analyst Data Scientist",
+        "period": "2022 - Present",
+        "company": "Infineon Technologies Asia Pacific Pte. Ltd., SG",
+        "groups": [
+          {
+            "heading": "Process Excellence",
+            "bullets": [
+              "Project Manager for cross-functional business projects in Business Process, Finance and Export Control domain",
+              "Developed full-stack web applications hosted on internal cloud platform",
+              "Technical member of ML-assisted Marketing Forecasting project that transformed rigid, quarterly, planning cycle into dynamic, market-driven demand forecasting."
+            ]
+          },
+          {
+            "heading": "Test Singapore Backend",
+            "bullets": [
+              "Project Manager for Optical Character Recognition project to salvage overkill in marking text process",
+              "Developed Python scripts to ETL Final Test equipment alarm and warning statistics via Selenium",
+              "Developed Tableau Dashboard with equipment data to provide Final Test engineers and technicians clear overview on preventive maintenance tasks",
+              "Received good feedback for in-house sharing to ~50 employees without prior ML experience on Predictive Maintenance"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "Senior Engineer",
+        "period": "2018 - 2022",
+        "company": "PSA Corporation Limited, SG",
+        "groups": [
+          {
+            "heading": "Smart System Solutions Department (Smart Machine-Automated Quay Crane)",
+            "bullets": [
+              "Manages Automated Quay Crane project by ensuring resources availability and timeline adherence",
+              "Performed tasks central to projects tendering, including specification write-up and technical scoring of proposals",
+              "Developed Python scripts to ETL month-long crane data for useful insights on operators benchmarking",
+              "Developed Extended Memobus Protocol (Yaskawa PLC) communication driver in Python for vendors applications"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "photography": {
+    "title": "Photography",
+    "intro": "Data tells the story; Photography captures the nuance.",
+    "subintro": "Showcasing some of my favourite shots. Click to view in enlarged format."
+  },
+  "contact": {
+    "intro": "Feel free to contact me to request for further information",
+    "items": [
+      { "icon": "bi-geo-alt", "title": "Address", "value": "Singapore" },
+      { "icon": "bi-telegram", "title": "Telegram", "value": "wl_yee", "url": "https://t.me/wl_yee" },
+      { "icon": "bi-envelope", "title": "Email Me", "value": "weiliang.yee [at] gmail.com" }
+    ]
+  }
+}
