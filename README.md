@@ -39,19 +39,17 @@ The portfolio is deployed and accessible via Docker on Synology NAS. See [DEPLOY
 ```
 /
 ├── src/                    # Portfolio source files
-│   ├── index.html         # Main homepage
-│   ├── portfolio-details.html  # Portfolio details page
-│   ├── starter-page.html  # Template starter page
-│   ├── service-details.html    # Service details page
-│   ├── assets/            # CSS, JS, images, and vendor files
-│   │   ├── css/          # Stylesheets
-│   │   ├── js/           # JavaScript files
-│   │   ├── img/          # Images and icons
-│   │   ├── photos.json   # Photo gallery data (generated)
-│   │   └── vendor/       # Third-party libraries
-│   └── forms/            # Contact form scripts
+│   ├── index.html         # Main homepage (only page)
+│   └── assets/            # CSS, JS, images, and vendor files
+│       ├── css/          # Stylesheets
+│       ├── js/           # JavaScript files
+│       ├── img/          # Images and icons
+│       ├── content.json  # Bio / skills / resume (editable)
+│       ├── photos.json   # Photo gallery data (generated)
+│       └── vendor/       # Third-party libraries
 ├── gallery/              # Local photos by category (not committed)
-├── upload_photos.py      # Cloudinary upload & metadata script
+├── upload_photos.js      # Cloudinary upload & metadata script
+├── nas-scripts/          # NAS auto-deploy script
 ├── package.json          # Node.js dependencies & scripts
 ├── Dockerfile            # Docker configuration
 ├── nginx.conf           # Nginx web server configuration
@@ -104,7 +102,7 @@ The portfolio is deployed and accessible via Docker on Synology NAS. See [DEPLOY
    docker-compose up -d
    ```
 
-Visit `http://localhost:8080` to view the portfolio.
+Visit `http://localhost:8081` to view the portfolio (port configured in `docker-compose.yml`).
 
 ## 🚀 Deployment
 
@@ -124,11 +122,9 @@ Upload the contents of the `src/` directory to any static hosting service like:
 ## 🎨 Customization
 
 ### Personal Information
-Update personal details in `src/index.html`:
-- Name and title in the hero section
-- About section content
-- Resume/experience details
-- Contact information
+Most editable content lives in `src/assets/content.json` (bio, skills, education,
+experience, socials, contact). Edit the JSON and refresh — no HTML changes needed.
+The page HTML only contains the structural scaffolding.
 
 ### Styling
 - Main styles: `src/assets/css/main.css`

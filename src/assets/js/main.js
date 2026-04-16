@@ -10,7 +10,6 @@
   "use strict";
 
   const CONFIG = {
-    birthYear: 1988,
     scrollTopThreshold: 100,
     scrollspyOffset: 10,
     layoutDebounceMs: 150,
@@ -22,6 +21,166 @@
 
   const portfolio = {};
   window.portfolio = portfolio;
+
+  // ──────────────────────────────────────────────
+  // Content renderer — populates sections from content.json
+  // ──────────────────────────────────────────────
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+    );
+  }
+
+  async function loadContent() {
+    const endpoints = ['assets/content.json', '/assets/content.json'];
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint);
+        if (response.ok) return await response.json();
+      } catch (_) { /* try next */ }
+    }
+    return null;
+  }
+
+  function renderContent(data) {
+    // ── About ──
+    const aboutIntro = document.querySelector('[data-slot="about.intro"]');
+    if (aboutIntro) aboutIntro.textContent = data.about.intro;
+
+    const aboutBody = document.querySelector('[data-slot="about.body"]');
+    if (aboutBody) {
+      const facts = data.about.facts.map(f =>
+        `<li><i class="bi bi-chevron-right"></i> <strong>${escapeHtml(f.label)}:</strong> <span>${escapeHtml(f.value)}</span></li>`
+      ).join('');
+      aboutBody.innerHTML = `
+        <div class="row gy-4 justify-content-center">
+          <div class="col-lg-4">
+            <img src="${escapeHtml(data.about.profileImage)}" class="img-fluid" alt="${escapeHtml(data.site.name)}">
+          </div>
+          <div class="col-lg-8 content">
+            <h2>${escapeHtml(data.about.headline)}</h2>
+            <p class="fst-italic py-3">${escapeHtml(data.about.subheadline)}</p>
+            <div class="row"><div class="col-lg"><ul>${facts}</ul></div></div>
+          </div>
+        </div>`;
+    }
+
+    // ── Skills ──
+    const skillsSlot = document.querySelector('[data-slot="skills"]');
+    if (skillsSlot) {
+      skillsSlot.innerHTML = data.skills.map((s, i) => `
+        <div class="col-lg-6 col-md-6">
+          <div class="skill-category" data-aos="fade-up" data-aos-delay="${100 + i * 100}">
+            <div class="skill-category-header">
+              <i class="bi ${escapeHtml(s.icon)}"></i>
+              <h3>${escapeHtml(s.title)}</h3>
+            </div>
+            <div class="skill-tags">
+              ${s.tags.map(t => `<span class="skill-tag">${escapeHtml(t)}</span>`).join('')}
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    // ── Resume (CV QR + education + experience) ──
+    const cvSlot = document.querySelector('[data-slot="resume.cv"]');
+    if (cvSlot && data.resume.cvUrl) {
+      cvSlot.innerHTML = `
+        <a href="${escapeHtml(data.resume.cvUrl)}" target="_blank" rel="noopener noreferrer">
+          <img src="${escapeHtml(data.resume.cvQrImage)}" alt="Resume QR Code" class="qr-code-img">
+        </a>
+        <div class="qr-code-label">
+          <a href="${escapeHtml(data.resume.cvUrl)}" target="_blank" rel="noopener noreferrer">Download Latest CV</a>
+        </div>`;
+    }
+
+    const eduCol = document.querySelector('[data-slot="resume.education"]');
+    if (eduCol) {
+      const edu = (data.resume.education || []).map(e => {
+        const certs = e.certificates
+          ? `<h6>Certificates Taken:</h6><ul>${e.certificates.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>`
+          : '';
+        return `<div class="resume-item">
+          <h4>${escapeHtml(e.degree)}</h4>
+          <h5>${escapeHtml(e.period)}</h5>
+          <p><em>${escapeHtml(e.institution)}</em></p>
+          ${certs}
+        </div>`;
+      }).join('');
+      const certs = (data.resume.certifications || []).map(c => `
+        <div class="resume-item">
+          <h4>${escapeHtml(c.degree)}</h4>
+          <h5>${escapeHtml(c.period)}</h5>
+          <p><em>${escapeHtml(c.institution)}</em></p>
+        </div>`).join('');
+      eduCol.innerHTML = `
+        <h3 class="resume-title">Education</h3>
+        ${edu}
+        ${certs ? `<h3 class="resume-title">Professional Certifications</h3>${certs}` : ''}`;
+    }
+
+    const expCol = document.querySelector('[data-slot="resume.experience"]');
+    if (expCol) {
+      const exp = (data.resume.experience || []).map(e => {
+        const groups = (e.groups || []).map(g => `
+          <h6>${escapeHtml(g.heading)}</h6>
+          <ul>${(g.bullets || []).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+        `).join('');
+        return `<div class="resume-item">
+          <h4>${escapeHtml(e.role)}</h4>
+          <h5>${escapeHtml(e.period)}</h5>
+          <p><em>${escapeHtml(e.company)}</em></p>
+          ${groups}
+        </div>`;
+      }).join('');
+      expCol.innerHTML = `<h3 class="resume-title">Professional Experience</h3>${exp}`;
+    }
+
+    // ── Photography intro ──
+    const photoIntro = document.querySelector('[data-slot="photography.intro"]');
+    if (photoIntro) photoIntro.textContent = data.photography.intro;
+    const photoSub = document.querySelector('[data-slot="photography.subintro"]');
+    if (photoSub) photoSub.innerHTML = `<em>${escapeHtml(data.photography.subintro)}</em>`;
+
+    // ── Contact ──
+    const contactIntro = document.querySelector('[data-slot="contact.intro"]');
+    if (contactIntro) contactIntro.textContent = data.contact.intro;
+    const contactItems = document.querySelector('[data-slot="contact.items"]');
+    if (contactItems) {
+      contactItems.innerHTML = (data.contact.items || []).map((c, i) => {
+        const val = c.url
+          ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(c.value)}</a>`
+          : escapeHtml(c.value);
+        return `<div class="info-item d-flex" data-aos="fade-up" data-aos-delay="${200 + i * 100}">
+          <i class="bi ${escapeHtml(c.icon)} flex-shrink-0"></i>
+          <div><h3>${escapeHtml(c.title)}</h3><p>${val}</p></div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Socials (hero + footer) ──
+    document.querySelectorAll('[data-slot="socials"]').forEach(el => {
+      el.innerHTML = (data.socials || []).map(s =>
+        `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(s.label)}"><i class="bi ${escapeHtml(s.icon)}"></i></a>`
+      ).join('');
+    });
+
+    // ── Site name (footer, hero, etc.) ──
+    document.querySelectorAll('[data-slot="site.name"]').forEach(el => {
+      el.textContent = data.site.name;
+    });
+  }
+
+  // Kick off content load immediately; keep a promise others can await.
+  const contentReady = loadContent().then(data => {
+    if (data) {
+      renderContent(data);
+      portfolio.content = data;
+    } else {
+      console.error('content.json failed to load — page sections will be empty.');
+    }
+  });
 
   /**
    * Theme toggle (dark / light mode)
@@ -139,12 +298,13 @@
   document.addEventListener('scroll', toggleScrollTop);
 
   /**
-   * Animation on scroll function and init
+   * Animation on scroll function and init — runs after content renders so the
+   * dynamically injected [data-aos] elements are picked up.
    */
   function aosInit() {
-    AOS.init(CONFIG.aos);
+    if (typeof AOS !== 'undefined') AOS.init(CONFIG.aos);
   }
-  window.addEventListener('load', aosInit);
+  window.addEventListener('load', () => contentReady.then(aosInit));
 
   /**
    * Init typed.js
@@ -159,11 +319,6 @@
       ...CONFIG.typed
     });
   }
-
-  /**
-   * Initiate Pure Counter
-   */
-  new PureCounter();
 
   /**
    * Initiate glightbox
@@ -272,9 +427,7 @@
         return;
       }
 
-      // Track loaded images for batched Isotope layout
-      let loadedCount = 0;
-      const totalImages = images.length;
+      // Debounced Isotope layout — recomputes once images finish decoding
       let layoutTimer = null;
 
       function batchLayout() {
@@ -329,13 +482,11 @@
 
         // Batched layout on image load
         img.onload = function () {
-          loadedCount++;
           batchLayout();
         };
 
         // Handle broken images gracefully
         img.onerror = function () {
-          loadedCount++;
           this.style.display = 'none';
           const placeholder = document.createElement('div');
           placeholder.className = 'img-placeholder d-flex align-items-center justify-content-center bg-light';
@@ -405,25 +556,6 @@
   window.addEventListener('load', fetchPortfolioImages);
 
   /**
-   * Init swiper sliders
-   */
-  function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
-      let config = JSON.parse(
-        swiperElement.querySelector(".swiper-config").innerHTML.trim()
-      );
-
-      if (swiperElement.classList.contains("swiper-tab")) {
-        initSwiperWithCustomPagination(swiperElement, config);
-      } else {
-        new Swiper(swiperElement, config);
-      }
-    });
-  }
-
-  window.addEventListener("load", initSwiper);
-
-  /**
    * Correct scrolling position upon page load for URLs containing hash links.
    */
   window.addEventListener('load', function (e) {
@@ -473,22 +605,5 @@
   }
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
-
-  /**
-   * Calculate and display age
-   */
-  function calculateAge(birthYear) {
-    const currentYear = new Date().getFullYear();
-    return currentYear - birthYear;
-  }
-
-  function displayAge() {
-    const ageElement = document.querySelector('.currentage');
-    if (ageElement) {
-      ageElement.innerText = calculateAge(CONFIG.birthYear);
-    }
-  }
-
-  window.addEventListener('load', displayAge);
 
 })();

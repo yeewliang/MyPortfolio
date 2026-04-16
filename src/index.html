@@ -14,11 +14,14 @@
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Fonts -->
+  <!-- Preload hero background for faster LCP -->
+  <link rel="preload" as="image" href="assets/img/bg.jpg">
+
+  <!-- Fonts (only the weights actually used: 400/500/700 regular) -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600;700&family=Raleway:wght@400;600;700&display=swap"
     rel="stylesheet">
 
   <!-- Vendor CSS Files -->
@@ -26,7 +29,6 @@
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
@@ -80,7 +82,7 @@
 
   <main class="main">
 
-    <!-- Hero Section -->
+    <!-- Hero Section — static (name/typed roles rarely change; edit here directly) -->
     <section id="hero" class="hero section light-background">
 
       <img src="assets/img/bg.jpg" alt="" role="presentation">
@@ -91,342 +93,88 @@
             <h2>Yee Wei Liang</h2>
             <p>I'm <span class="typed" data-typed-items="Data Scientist, Developer, Certified ScrumMaster">Data
                 Scientist</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
-            <div class="social-links">
-              <a href="https://www.linkedin.com/in/wei-liang-yee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile"><i class="bi bi-linkedin"></i></a>
-              <a href="https://github.com/yeewliang" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile"><i class="bi bi-github"></i></a>
-            </div>
+            <div class="social-links" data-slot="socials"></div>
           </div>
         </div>
       </div>
 
     </section><!-- /Hero Section -->
 
-    <!-- About Section -->
+    <!-- About Section — content from content.json → about -->
     <section id="about" class="about section">
-
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>About</h2>
-        <p>I am currently a Staff Analyst Data Scientist with a strong focus on machine learning and computer vision,
-          backed by hands-on experience in maritime and manufacturing industries. With a solid foundation in industrial
-          software integration and project management (IPMA Level D), I deliver innovative solutions that optimize
-          performance and drive efficiency.</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4 justify-content-center">
-          <div class="col-lg-4">
-            <img src="assets/img/profile-img.jpg" class="img-fluid" alt="">
-          </div>
-          <div class="col-lg-8 content">
-            <h2>Data Scientist &amp; Project Manager</h2>
-            <p class="fst-italic py-3">
-              Versatile Data Scientist with expertise in data science, software development and project management.
-            </p>
-            <div class="row">
-              <div class="col-lg">
-                <ul>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Highest Qualification: </strong> <span>Master of
-                      Technology </span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>weiliang.yee [at]
-                      gmail.com</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>City:</strong> <span>Singapore</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Hobbies/Interest:</strong> <span>Photography (Street, Architecture, Portrait), Reading, Movies</span></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
+        <p data-slot="about.intro"></p>
+      </div>
+      <div class="container" data-aos="fade-up" data-aos-delay="100" data-slot="about.body"></div>
     </section><!-- /About Section -->
 
-    <!-- Skills Section -->
+    <!-- Skills Section — content from content.json → skills[] -->
     <section id="skills" class="skills section">
-
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Skills</h2>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row gy-4">
-
-          <div class="col-lg-6 col-md-6">
-            <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
-              <div class="skill-category-header">
-                <i class="bi bi-graph-up"></i>
-                <h3>Data Science &amp; ML</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">Machine Learning</span>
-                <span class="skill-tag">Computer Vision</span>
-                <span class="skill-tag">Predictive Maintenance</span>
-                <span class="skill-tag">Pattern Recognition</span>
-                <span class="skill-tag">OCR</span>
-                <span class="skill-tag">Tableau</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6">
-            <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
-              <div class="skill-category-header">
-                <i class="bi bi-code-slash"></i>
-                <h3>Programming</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">SQL</span>
-                <span class="skill-tag">HTML / CSS</span>
-                <span class="skill-tag">JavaScript</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6">
-            <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
-              <div class="skill-category-header">
-                <i class="bi bi-diagram-3"></i>
-                <h3>System &amp; Architecture</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">System Design</span>
-                <span class="skill-tag">System Architecture</span>
-                <span class="skill-tag">End-to-End Pipelines</span>
-                <span class="skill-tag">ETL</span>
-                <span class="skill-tag">Selenium</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6">
-            <div class="skill-category" data-aos="fade-up" data-aos-delay="400">
-              <div class="skill-category-header">
-                <i class="bi bi-kanban"></i>
-                <h3>Project Management</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">Agile / Scrum (CSM)</span>
-                <span class="skill-tag">IPMA Level D</span>
-                <span class="skill-tag">Cross-functional Leadership</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6">
-            <div class="skill-category" data-aos="fade-up" data-aos-delay="500">
-              <div class="skill-category-header">
-                <i class="bi bi-palette"></i>
-                <h3>Design</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="skill-tag">UX Design</span>
-                <span class="skill-tag">Prototyping</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
       </div>
-
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4" data-slot="skills"></div>
+      </div>
     </section><!-- /Skills Section -->
 
-    <!-- Resume Section -->
+    <!-- Resume Section — content from content.json → resume -->
     <section id="resume" class="resume section">
-
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Resume</h2>
-        <!-- <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p> -->
-      </div><!-- End Section Title -->
-
-      <div class="col-lg col-md d-flex flex-column align-items-center">
-        <a href="https://gofile.me/7QnRn/vt8KRdFZ3" target="_blank" rel="noopener noreferrer">
-          <img src="assets/img/resumeQR.png" alt="Resume QR Code" class="qr-code-img">
-        </a>
-        <div class="qr-code-label">
-          <a href="https://gofile.me/7QnRn/vt8KRdFZ3" target="_blank" rel="noopener noreferrer">Download Latest CV</a>
-        </div>
       </div>
-
+      <div class="col-lg col-md d-flex flex-column align-items-center" data-slot="resume.cv"></div>
       <div class="container">
-
         <div class="row">
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="resume-title">Education</h3>
-            <div class="resume-item">
-              <h4>Master of Technology (Intelligent Systems)</h4>
-              <h5>2021 - 2022</h5>
-              <p><em>National University of Singapore</em></p>
-              <p>
-              <h6>Certificates Taken:</h6>
-              <ul>
-                <li>Intelligent Reasoning Systems</li>
-                <li>Pattern Recognition Systems</li>
-                <li>Intelligent Sensing Systems</li>
-                <li>Intelligent Robotic Systems</li>
-              </ul>
-              </p>
-            </div><!-- End Resume Item -->
-
-            <div class="resume-item">
-              <h4>Bachelor of Computer Engineering (Hons.)</h4>
-              <h5>2008-2012</h5>
-              <p><em>National University of Singapore</em></p>
-            </div><!-- End Resume Item -->
-
-            <h3 class="resume-title">Professional Certifications</h3>
-            <div class="resume-item">
-              <h4>User Experience Design Bootcamp</h4>
-              <h5>2024</h5>
-              <p><em>Vertical Institute</em></p>
-            </div><!-- End Resume Item -->
-
-            <div class="resume-item">
-              <h4>Certified Scrum Master</h4>
-              <h5>2024</h5>
-              <p><em>Scrum Alliance</em></p>
-            </div><!-- End Resume Item -->
-          </div>
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <h3 class="resume-title">Professional Experience</h3>
-            <div class="resume-item">
-              <h4>Staff Analyst Data Scientist</h4>
-              <h5>2022 - Present</h5>
-              <p><em>Infineon Technologies Asia Pacific Pte. Ltd., SG</em></p>
-              <h6>Process Excellence</h6>
-              <ul>
-                <li>Project Manager for cross-functional business projects in Business Process, Finance and Export Control domain</li>
-                <li>Developed full-stack web applications hosted on internal cloud platform</li>
-                <li>Technical member of ML-assisted Marketing Forecasting project that transformed rigid, quarterly, planning cycle into dynamic, market-driven demand forecasting. </li>
-              </ul>
-              <h6>Test Singapore Backend</h6>
-              <ul>
-                <li>Project Manager for Optical Character Recognition project to salvage overkill in marking text
-                  process</li>
-                <li>Developed Python scripts to ETL Final Test equipment alarm and warning statistics via Selenium</li>
-                <li>Developed Tableau Dashboard with equipment data to provide Final Test engineers and technicians
-                  clear overview on preventive maintenance tasks</li>
-                <li>Received good feedback for in-house sharing to ~50 employees without prior ML experience on
-                  Predictive Maintenance</li>
-              </ul>
-            </div><!-- End Resume Item -->
-
-            <div class="resume-item">
-              <h4>Senior Engineer</h4>
-              <h5>2018 - 2022</h5>
-              <p><em>PSA Corporation Limited, SG</em></p>
-              <h6>Smart System Solutions Department (Smart Machine-Automated Quay Crane)</h6>
-              <ul>
-                <li>Manages Automated Quay Crane project by ensuring resources availability and timeline adherence</li>
-                <li>Performed tasks central to projects tendering, including specification write-up and technical
-                  scoring of proposals</li>
-                <li>Developed Python scripts to ETL month-long crane data for useful insights on operators benchmarking
-                </li>
-                <li>Developed Extended Memobus Protocol (Yaskawa PLC) communication driver in Python for vendors
-                  applications</li>
-              </ul>
-            </div><!-- End Resume Item -->
-
-          </div>
-
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100" data-slot="resume.education"></div>
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200" data-slot="resume.experience"></div>
         </div>
-
       </div>
-
     </section><!-- /Resume Section -->
 
-    <!-- Photography Section -->
+    <!-- Photography Section — intro from content.json, images from photos.json -->
     <section id="photography" class="portfolio section isotope-layout" data-default-filter="*" data-layout="masonry"
       data-sort="original-order">
-
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Photography</h2>
-        <p>Data tells the story; Photography captures the nuance. </p>
-        <h6><em>Showcasing some of my favourite shots. Click to view in enlarged format.</em></h6>
-      </div><!-- End Section Title -->
-
+        <p data-slot="photography.intro"></p>
+        <h6 data-slot="photography.subintro"></h6>
+      </div>
       <div class="container" data-aos="fade-up" data-aos-delay="100">
-
         <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-          <!-- Dynamic Content will be loaded here -->
           <div class="col-12 text-center" id="portfolio-loader">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </section><!-- /Photography Section -->
 
-    <!-- Contact Section -->
+    <!-- Contact Section — content from content.json → contact -->
     <section id="contact" class="contact section">
-
-      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Contact</h2>
-        <p>Feel free to contact me to request for further information</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade" data-aos-delay="100">
-
-        <div class="row gy-4 justify-content-center">
-
-          <div class="col-lg-4">
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-              <i class="bi bi-geo-alt flex-shrink-0"></i>
-              <div>
-                <h3>Address</h3>
-                <p>Singapore</p>
-              </div>
-            </div><!-- End Info Item -->
-
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-              <i class="bi bi-telegram flex-shrink-0"></i>
-              <div>
-                <h3>Telegram</h3>
-                <p><a href="https://t.me/wl_yee" target="_blank" rel="noopener noreferrer">wl_yee</a></p>
-              </div>
-            </div><!-- End Info Item -->
-
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-              <i class="bi bi-envelope flex-shrink-0"></i>
-              <div>
-                <h3>Email Me</h3>
-                <p>weiliang.yee [at] gmail.com</p>
-              </div>
-            </div><!-- End Info Item -->
-
-          </div>
-
-        </div>
-
+        <p data-slot="contact.intro"></p>
       </div>
-
+      <div class="container" data-aos="fade" data-aos-delay="100">
+        <div class="row gy-4 justify-content-center">
+          <div class="col-lg-4" data-slot="contact.items"></div>
+        </div>
+      </div>
     </section><!-- /Contact Section -->
 
   </main>
 
   <footer id="footer" class="footer position-relative light-background">
     <div class="container">
-      <h3 class="sitename">Yee Wei Liang</h3>
+      <h3 class="sitename" data-slot="site.name"></h3>
       <p></p>
-      <div class="social-links d-flex justify-content-center">
-        <a href="https://www.linkedin.com/in/wei-liang-yee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile"><i class="bi bi-linkedin"></i></a>
-        <a href="https://github.com/yeewliang" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile"><i class="bi bi-github"></i></a>
-      </div>
+      <div class="social-links d-flex justify-content-center" data-slot="socials"></div>
       <div class="container">
         <div class="copyright">
-          <span>Copyright</span> <strong class="px-1 sitename">Yee Wei Liang</strong> <span>All Rights Reserved</span>
+          <span>Copyright</span> <strong class="px-1 sitename" data-slot="site.name"></strong> <span>All Rights Reserved</span>
         </div>
       </div>
     </div>
@@ -440,19 +188,15 @@
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/typed.js/typed.umd.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script defer src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="assets/vendor/aos/aos.js"></script>
+  <script defer src="assets/vendor/typed.js/typed.umd.js"></script>
+  <script defer src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script defer src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script defer src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2"></script>
+  <script defer src="assets/js/main.js?v=3"></script>
 
 </body>
 

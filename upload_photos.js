@@ -250,9 +250,8 @@ async function uploadImage(filepath, categoryFolder, cache) {
   // Sanitize: replace spaces with hyphens, lowercase — Cloudinary treats spaces as folder separators
   const safeStem = stem.replace(/\s+/g, "-").toLowerCase();
   const folder = `${CLOUDINARY_FOLDER}/${categoryFolder}`;
-  const publicId = `${folder}/${safeStem}`;
 
-  console.log(`  Uploading: ${relPath} → ${publicId}`);
+  console.log(`  Uploading: ${relPath} → ${folder}/${safeStem}`);
   try {
     const result = await cloudinary.uploader.upload(filepath, {
       public_id: safeStem,

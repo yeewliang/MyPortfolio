@@ -88,16 +88,8 @@ Local Machine                    Cloudinary CDN              Portfolio Site
        └──────────▶ src/assets/photos.json ───── git push ────────┘
 ```
 
-## Image Optimization (`optimize_images.py`)
+## Image Optimization
 
-Optional pre-processing script for local format conversion:
-
-```bash
-pip install Pillow pillow-avif-plugin
-mkdir raw_images
-# Place high-res images in raw_images/
-python optimize_images.py
-# Optimized images saved to ready_to_upload/
-```
-
-> **Note:** Cloudinary handles format conversion (WebP/AVIF) and resizing automatically via URL transforms, so this script is only needed if you want local copies in multiple formats.
+Cloudinary handles format conversion (WebP/AVIF) and resizing automatically via
+URL transforms (see [CLOUDINARY_OPTIMIZATION.md](CLOUDINARY_OPTIMIZATION.md)),
+so local pre-processing isn't needed for the web pipeline.
