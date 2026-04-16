@@ -31,6 +31,20 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
+  <!-- Apply saved / preferred theme before paint to avoid a flash of wrong theme -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+      }
+    })();
+  </script>
+
   <!-- =======================================================
   * Template Name: MyResume
   * Template URL: https://bootstrapmade.com/free-html-bootstrap-template-my-resume/
@@ -41,6 +55,12 @@
 </head>
 
 <body class="index-page">
+
+  <!-- Theme Toggle (Dark / Light) -->
+  <button type="button" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <i class="bi bi-moon-stars-fill theme-icon-dark" aria-hidden="true"></i>
+    <i class="bi bi-sun-fill theme-icon-light" aria-hidden="true"></i>
+  </button>
 
   <header id="header" class="header d-flex flex-column justify-content-center">
 
