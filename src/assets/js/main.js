@@ -183,6 +183,54 @@
   });
 
   /**
+   * Theme toggle (dark / light mode)
+   * The initial theme is applied by an inline <head> script to prevent
+   * a flash of the wrong theme. This handler only manages user toggles.
+   */
+  const themeToggleBtn = document.querySelector('.theme-toggle');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    if (themeToggleBtn) {
+      themeToggleBtn.setAttribute(
+        'aria-label',
+        theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+      );
+    }
+  }
+
+  // Sync aria-label with whatever theme the inline script applied
+  applyTheme(document.documentElement.getAttribute('data-bs-theme') || 'light');
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', function () {
+      const current = document.documentElement.getAttribute('data-bs-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        /* storage unavailable (e.g. private mode) — toggle still works for this session */
+      }
+    });
+  }
+
+  // Follow the system preference when the user hasn't explicitly chosen a theme
+  if (window.matchMedia) {
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemChange = function (event) {
+      let stored = null;
+      try { stored = localStorage.getItem('theme'); } catch (e) { /* ignore */ }
+      if (!stored) applyTheme(event.matches ? 'dark' : 'light');
+    };
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', handleSystemChange);
+    } else if (typeof mql.addListener === 'function') {
+      mql.addListener(handleSystemChange);
+    }
+  }
+
+  /**
    * Header toggle
    */
   const headerToggleBtn = document.querySelector('.header-toggle');
