@@ -118,7 +118,7 @@
           {
             "heading": "Smart System Solutions Department (Smart Machine-Automated Quay Crane)",
             "bullets": [
-              "Manages Automated Quay Crane project by ensuring resources availability and timeline adherence",
+              "Managed Automated Quay Crane project by ensuring resources availability and timeline adherence",
               "Performed tasks central to projects tendering, including specification write-up and technical scoring of proposals",
               "Developed Python scripts to ETL month-long crane data for useful insights on operators benchmarking",
               "Developed Extended Memobus Protocol (Yaskawa PLC) communication driver in Python for vendors applications"
@@ -138,7 +138,7 @@
     "items": [
       { "icon": "bi-geo-alt", "title": "Address", "value": "Singapore" },
       { "icon": "bi-telegram", "title": "Telegram", "value": "wl_yee", "url": "https://t.me/wl_yee" },
-      { "icon": "bi-envelope", "title": "Email Me", "value": "weiliang.yee [at] gmail.com" }
+      { "icon": "bi-envelope", "title": "Email Me", "value": "weiliang.yee@gmail.com", "url": "mailto:weiliang.yee@gmail.com" }
     ]
   }
 }
