@@ -69,8 +69,11 @@
     // ── Skills ──
     const skillsSlot = document.querySelector('[data-slot="skills"]');
     if (skillsSlot) {
-      skillsSlot.innerHTML = data.skills.map((s, i) => `
-        <div class="col-lg-6 col-md-6">
+      skillsSlot.innerHTML = data.skills.map((s, i) => {
+        const isLastOdd = data.skills.length % 2 !== 0 && i === data.skills.length - 1;
+        const colClass = isLastOdd ? 'col-lg-12 col-md-12' : 'col-lg-6 col-md-6';
+        return `
+        <div class="${colClass}">
           <div class="skill-category" data-aos="fade-up" data-aos-delay="${100 + i * 100}">
             <div class="skill-category-header">
               <i class="bi ${escapeHtml(s.icon)}"></i>
@@ -80,7 +83,8 @@
               ${s.tags.map(t => `<span class="skill-tag">${escapeHtml(t)}</span>`).join('')}
             </div>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
     // ── Resume (CV QR + education + experience) ──
@@ -320,16 +324,6 @@
     });
   }
 
-  /**
-   * Initiate glightbox
-   */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
-  });
-
-  /**
-   * Init isotope layout and filters
-   */
   /**
    * Init isotope layout and filters
    */
