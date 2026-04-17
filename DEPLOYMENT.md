@@ -22,7 +22,8 @@ Two update paths:
 ├── gallery/                # Local photos organized by category (not committed)
 ├── upload_photos.js        # Cloudinary upload & metadata extraction script
 ├── nas-scripts/
-│   └── auto-deploy.sh      # NAS-side poll-and-rebuild script
+│   ├── auto-deploy.sh      # NAS-side poll-and-rebuild script
+│   └── sync-photos.sh      # NAS-side Cloudinary upload + photos.json regen
 ├── Dockerfile
 ├── nginx.conf
 ├── docker-compose.yml
@@ -123,11 +124,41 @@ the NAS at runtime:
 
 ### Regenerating `photos.json` on the NAS
 
-If you want the photo pipeline to also run NAS-side, add a scheduled task
-that runs `node upload_photos.js` in the project folder and writes
-`photos.json` straight into `/volume1/docker/portfolio/content/`. That
-closes the loop: new photos in `gallery/` → NAS runs the script →
-`photos.json` updates → site picks it up on next cache expiry.
+`nas-scripts/sync-photos.sh` wraps `upload_photos.js` so the photo
+pipeline runs entirely on the NAS. Drop a JPEG into the gallery share,
+wait for the schedule to fire, and the new photo shows up on the live
+site on the next cache expiry — no laptop, no git push, no rebuild.
+
+One-off setup:
+
+1. Enable the content volume override (see the section above).
+2. Install Node dependencies in the project folder:
+   ```bash
+   cd /volume1/docker/portfolio/MyPortfolio
+   npm install --omit=dev --no-audit --no-fund
+   ```
+3. Copy `.env.example` → `.env` in the project folder and fill in your
+   Cloudinary credentials (this file is gitignored and stays NAS-local).
+4. Create a gallery share outside the repo, organised by category:
+   ```
+   /volume1/photo/portfolio/
+     landscape/
+     portrait/
+     street/
+   ```
+5. Schedule `nas-scripts/sync-photos.sh` in Synology Task Scheduler
+   (user `root`, nightly or on demand). Override env vars in the task if
+   your paths differ:
+   ```bash
+   PROJECT_DIR=/volume1/docker/portfolio/MyPortfolio \
+   GALLERY_DIR=/volume1/photo/portfolio \
+   CONTENT_DIR=/volume1/docker/portfolio/content \
+     /volume1/docker/portfolio/MyPortfolio/nas-scripts/sync-photos.sh
+   ```
+
+The upload cache (`$CONTENT_DIR/.upload-cache.json`) lives in the
+content volume, so it survives auto-deploy's `git reset --hard` and
+only unchanged files get skipped.
 
 ## Configuration
 

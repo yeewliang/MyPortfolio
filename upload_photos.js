@@ -26,9 +26,12 @@ require("dotenv").config();
 // ──────────────────────────────────────────────
 // Configuration
 // ──────────────────────────────────────────────
-const GALLERY_DIR = path.resolve("./gallery");
-const OUTPUT_JSON = path.resolve("./src/assets/photos.json");
-const CACHE_FILE = path.resolve("./.upload-cache.json");
+// Paths can be overridden via env vars so the NAS-side sync script can
+// point GALLERY_DIR at a Photos share and PHOTOS_JSON at the content
+// volume mount — see nas-scripts/sync-photos.sh.
+const GALLERY_DIR = path.resolve(process.env.GALLERY_DIR || "./gallery");
+const OUTPUT_JSON = path.resolve(process.env.PHOTOS_JSON || "./src/assets/photos.json");
+const CACHE_FILE = path.resolve(process.env.PHOTOS_CACHE || "./.upload-cache.json");
 const CLOUDINARY_FOLDER = "portfolio";
 const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"]);
 
