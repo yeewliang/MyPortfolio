@@ -1,0 +1,25 @@
+# NAS "edit without rebuild" override.
+#
+# Copy this file to docker-compose.override.yml on the NAS to mount editable
+# content from a host folder over the baked-in defaults. Docker Compose merges
+# override files automatically, so `docker compose up -d` picks this up
+# without any extra flags.
+#
+# First-time setup on the NAS (one-off):
+#   mkdir -p /volume1/docker/portfolio/content
+#   cp src/assets/content.json /volume1/docker/portfolio/content/content.json
+#   cp src/assets/photos.json  /volume1/docker/portfolio/content/photos.json
+#   cp docker-compose.override.yml.example docker-compose.override.yml
+#   docker compose up -d
+#
+# Afterwards, editing either JSON on the NAS updates the live site within
+# ~5 minutes (the nginx cache TTL). No image rebuild, no git push, no cron.
+#
+# Tip: you can edit the files through Synology File Station, SMB, Drive, or
+# any editor you can point at /volume1/docker/portfolio/content/.
+
+services:
+  portfolio:
+    volumes:
+      - /volume1/docker/portfolio/content/content.json:/usr/share/nginx/html/assets/content.json:ro
+      - /volume1/docker/portfolio/content/photos.json:/usr/share/nginx/html/assets/photos.json:ro
